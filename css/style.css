@@ -220,12 +220,15 @@ img, canvas { display: block; max-width: 100%; }
 .project-link { font-size: 0.82rem; color: var(--ink-dim); transition: color 0.25s; }
 .project-link:hover { color: var(--sage-soft); }
 
-/* Watch Demo — solid fill so it's never just faint border + dim text */
-.project-watch {
+/* Watch Demo — solid fill so it's never just faint border + dim text.
+   .btn-watch is the visual style (used by all 6); .project-watch is the
+   separate JS hook that opens the self-hosted-video lightbox (only the 2
+   projects with no LinkedIn upload use it — the rest are plain links). */
+.btn-watch {
   background: var(--ember); color: #0b0c0f; border: none;
   box-shadow: 0 0 0 0 rgba(255, 90, 31, 0); transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
 }
-.project-watch:hover { background: var(--ember-soft); box-shadow: 0 10px 26px -8px rgba(255, 90, 31, 0.55); transform: translateY(-2px); }
+.btn-watch:hover { background: var(--ember-soft); box-shadow: 0 10px 26px -8px rgba(255, 90, 31, 0.55); transform: translateY(-2px); }
 
 /* ===== Video lightbox ===== */
 .video-modal {
@@ -240,7 +243,6 @@ img, canvas { display: block; max-width: 100%; }
 .video-modal-close { background: none; border: none; color: var(--ink); font-size: 1.6rem; line-height: 1; cursor: pointer; padding: 0.2rem 0.5rem; }
 .video-modal-close:hover { color: var(--ember-soft); }
 #video-modal-player { display: block; width: 100%; max-height: 70vh; background: #000; }
-#video-modal-embed { display: none; width: 100%; height: min(70vh, 600px); border: 0; background: #000; }
 
 /* Step cards */
 .step-card {
