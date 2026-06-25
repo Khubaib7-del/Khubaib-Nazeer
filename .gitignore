@@ -5,6 +5,10 @@ Thumbs.db
 # Editor
 .vscode/
 
-# Demo videos — not yet compressed (two exceed GitHub's 100MB file limit).
-# Compress with ffmpeg (see project notes), then remove this line and commit them.
+# Demo videos — most projects use a LinkedIn embed instead (see main.js).
+# These self-hosted originals aren't compressed yet (two exceed GitHub's
+# 100MB file limit). Compress with ffmpeg, then remove this block and commit.
+# pop-rush.mp4 is the exception: no LinkedIn video exists for it, it's
+# already small (13MB), so it's pushed directly — allow-listed below.
 assets/videos/*.mp4
+!assets/videos/pop-rush.mp4
