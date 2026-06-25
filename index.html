@@ -180,7 +180,7 @@
             <li><span>Stack</span><span>React, Node, PostgreSQL</span></li>
             <li><span>Status</span><span>Shipped</span></li>
           </ul>
-          <a class="btn btn-outline magnetic btn-watch" href="https://www.linkedin.com/feed/update/urn:li:ugcPost:7468625818991341569/" target="_blank" rel="noopener">Watch Demo ↗</a>
+          <button class="btn btn-outline magnetic btn-watch project-watch" data-embed="linkedin" data-src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7468625818991341569?compact=1" data-fallback="https://www.linkedin.com/feed/update/urn:li:ugcPost:7468625818991341569/" data-title="Bite Balance">Watch Demo ▶</button>
         </article>
 
         <article class="project-card">
@@ -193,7 +193,7 @@
             <li><span>Stack</span><span>HTML, CSS, JS</span></li>
             <li><span>Status</span><span>Shipped</span></li>
           </ul>
-          <a class="btn btn-outline magnetic btn-watch" href="https://www.linkedin.com/feed/update/urn:li:ugcPost:7435765972952797184/" target="_blank" rel="noopener">Watch Demo ↗</a>
+          <button class="btn btn-outline magnetic btn-watch project-watch" data-embed="linkedin" data-src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7435765972952797184?compact=1" data-fallback="https://www.linkedin.com/feed/update/urn:li:ugcPost:7435765972952797184/" data-title="AlgoViz">Watch Demo ▶</button>
         </article>
 
         <article class="project-card">
@@ -222,7 +222,7 @@
             <li><span>Stack</span><span>React, TypeScript, PixiJS</span></li>
             <li><span>Status</span><span>Shipped</span></li>
           </ul>
-          <a class="btn btn-outline magnetic btn-watch" href="https://www.linkedin.com/feed/update/urn:li:ugcPost:7474052842388107264/" target="_blank" rel="noopener">Watch Demo ↗</a>
+          <button class="btn btn-outline magnetic btn-watch project-watch" data-embed="linkedin" data-src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7474052842388107264?compact=1" data-fallback="https://www.linkedin.com/feed/update/urn:li:ugcPost:7474052842388107264/" data-title="Echo Drift">Watch Demo ▶</button>
         </article>
 
         <article class="project-card">
@@ -249,7 +249,7 @@
             <li><span>Status</span><span>Shipped</span></li>
           </ul>
           <div class="project-card-links">
-            <a class="btn btn-outline magnetic btn-watch" href="https://www.linkedin.com/feed/update/urn:li:ugcPost:7434311840773541890/" target="_blank" rel="noopener">Watch Demo ↗</a>
+            <button class="btn btn-outline magnetic btn-watch project-watch" data-embed="linkedin" data-src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7434311840773541890?compact=1" data-fallback="https://www.linkedin.com/feed/update/urn:li:ugcPost:7434311840773541890/" data-title="OS Scheduler Visualizer">Watch Demo ▶</button>
             <a href="https://github.com/Khubaib7-del/OS-Scheduler-Visualizer" target="_blank" rel="noopener" class="project-link">GitHub ↗</a>
           </div>
         </article>
@@ -402,9 +402,11 @@
   <div class="video-modal-inner">
     <div class="video-modal-head">
       <span id="video-modal-title"></span>
+      <a id="video-modal-fallback" class="video-modal-fallback" href="#" target="_blank" rel="noopener">View on LinkedIn ↗</a>
       <button class="video-modal-close" id="video-modal-close" aria-label="Close video">&times;</button>
     </div>
     <video id="video-modal-player" controls preload="none"></video>
+    <iframe id="video-modal-embed" allowfullscreen title="Embedded post"></iframe>
   </div>
 </div>
 

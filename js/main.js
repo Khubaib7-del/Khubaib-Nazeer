@@ -119,9 +119,12 @@ navMobile.querySelectorAll('a').forEach((a) =>
   })
 );
 
-/* ---------- Project video lightbox (self-hosted videos only — POP Rush, CogniVision) ---------- */
+/* ---------- Project video lightbox (self-hosted <video>, or LinkedIn embed with a
+   visible "View on LinkedIn" fallback link in case an ad-blocker kills the iframe) ---------- */
 const videoModal = document.getElementById('video-modal');
 const videoPlayer = document.getElementById('video-modal-player');
+const videoEmbed = document.getElementById('video-modal-embed');
+const videoFallback = document.getElementById('video-modal-fallback');
 const videoTitle = document.getElementById('video-modal-title');
 const videoClose = document.getElementById('video-modal-close');
 
@@ -130,15 +133,27 @@ function closeVideoModal() {
   videoPlayer.pause();
   videoPlayer.removeAttribute('src');
   videoPlayer.load();
+  videoEmbed.removeAttribute('src');
   document.body.style.overflow = '';
 }
 document.querySelectorAll('.project-watch').forEach((btn) => {
   btn.addEventListener('click', () => {
     videoTitle.textContent = btn.dataset.title || '';
-    videoPlayer.src = btn.dataset.src;
+    if (btn.dataset.embed === 'linkedin') {
+      videoPlayer.style.display = 'none';
+      videoEmbed.style.display = 'block';
+      videoEmbed.src = btn.dataset.src;
+      videoFallback.href = btn.dataset.fallback;
+      videoFallback.style.display = 'inline-block';
+    } else {
+      videoEmbed.style.display = 'none';
+      videoFallback.style.display = 'none';
+      videoPlayer.style.display = 'block';
+      videoPlayer.src = btn.dataset.src;
+      videoPlayer.play().catch(() => {});
+    }
     videoModal.classList.add('open');
     document.body.style.overflow = 'hidden';
-    videoPlayer.play().catch(() => {});
   });
 });
 videoClose.addEventListener('click', closeVideoModal);
