@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://khubaib7-del.github.io/Khubaib-Nazeer-Protfolio/sitemap.xml

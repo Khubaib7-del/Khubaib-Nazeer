@@ -8,6 +8,27 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matc
 
 gsap.registerPlugin(ScrollTrigger);
 
+/* ---------- Custom cursor: ember dot + lagging ring, expands over interactive elements ---------- */
+if (!reducedMotion && window.matchMedia('(pointer: fine)').matches) {
+  const dot = document.getElementById('cursor-dot');
+  const ring = document.getElementById('cursor-ring');
+  document.body.classList.add('has-custom-cursor');
+  gsap.set([dot, ring], { xPercent: -50, yPercent: -50 });
+
+  const ringX = gsap.quickTo(ring, 'x', { duration: 0.4, ease: 'power3' });
+  const ringY = gsap.quickTo(ring, 'y', { duration: 0.4, ease: 'power3' });
+  window.addEventListener('mousemove', (e) => {
+    gsap.set(dot, { x: e.clientX, y: e.clientY });
+    ringX(e.clientX);
+    ringY(e.clientY);
+  });
+
+  document.querySelectorAll('a, button, .skill-chip, .cert-card-frame img').forEach((el) => {
+    el.addEventListener('mouseenter', () => ring.classList.add('is-active'));
+    el.addEventListener('mouseleave', () => ring.classList.remove('is-active'));
+  });
+}
+
 // Adopt the CSS-painted translateY(110%) into GSAP's own yPercent tracking
 // so the later yPercent:0 tween actually has something to animate from.
 gsap.set('.reveal-line', { yPercent: 110 });
@@ -375,24 +396,26 @@ function setupHorizontalScroll(sectionSel, trackSel, progressSel) {
 }
 setupHorizontalScroll('#collection', '#collection-track', '#collection-progress');
 
-/* ---------- Stat counters ---------- */
+/* ---------- Stat counters, paired with a gauge bar that fills in lockstep ---------- */
 gsap.utils.toArray('.stat-num').forEach((el) => {
   const target = parseFloat(el.dataset.target);
   const suffix = el.dataset.suffix || '';
   const plain = el.hasAttribute('data-plain'); // skip thousands-separator, e.g. for a year like 2024
+  const gauge = el.parentElement.querySelector('.stat-gauge span');
   ScrollTrigger.create({
     trigger: el,
     start: 'top 85%',
     once: true,
     onEnter: () => {
-      gsap.to(el, {
-        innerText: target,
+      const proxy = { v: 0 };
+      gsap.to(proxy, {
+        v: target,
         duration: 1.6,
         ease: 'power2.out',
-        snap: { innerText: 1 },
         onUpdate() {
-          const n = Math.floor(el.innerText);
+          const n = Math.floor(proxy.v);
           el.textContent = (plain ? n : n.toLocaleString()) + suffix;
+          if (gauge) gauge.style.transform = `scaleX(${proxy.v / target})`;
         },
       });
     },
