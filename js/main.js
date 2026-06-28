@@ -1,6 +1,7 @@
 import { initRoomScene } from './room-scene.js';
 import { initPixelArt } from './pixel-art.js';
 import { applySmokeText } from './smoke-text.js';
+import { applyGradientWipe, applyCharFlip, applyScrambleText } from './text-effects.js';
 import { initCourseRing } from './course-ring.js';
 import { initSkillsPuzzle } from './skills-puzzle.js';
 
@@ -219,12 +220,19 @@ gsap.utils.toArray('.reveal-up').forEach((el) => {
   );
 });
 
-/* ---------- Philosophy: smoke-dissolve text reveal ---------- */
-applySmokeText('.split-text');
-applySmokeText(
-  '.education h2, .skills h2, .h-section-head h2, .certificates-head h2, .stories h2, .legacy-text h2',
-  { dissolveOut: false }
-);
+/* ---------- Heading reveals: deliberately different techniques per section ---------- */
+applySmokeText('.split-text'); // Philosophy: full smoke in-then-out, the section's signature effect
+applySmokeText('.certificates-head h2, .legacy-text h2', { dissolveOut: false }); // bookend sections stay calm
+applyGradientWipe('.education h2'); // ember color sweep
+applyCharFlip('.skills h2'); // sharp mechanical flip, ties to the puzzle below it
+gsap.utils.toArray('.h-section-head h2').forEach((el) => {
+  gsap.fromTo(
+    el,
+    { clipPath: 'inset(0 100% 0 0)' },
+    { clipPath: 'inset(0 0% 0 0)', ease: 'none', scrollTrigger: { trigger: el, start: 'top 85%', end: 'top 50%', scrub: true } }
+  );
+}); // Projects: curtain-wipe mask
+applyScrambleText('.stories h2'); // terminal-style decode-in
 
 gsap.to('.philosophy-bg', {
   backgroundPosition: '100% 50%',
@@ -285,6 +293,25 @@ if (!reducedMotion) {
     });
   });
 }
+
+/* ---------- Currently Exploring: section glow + alternating card entrance ---------- */
+ScrollTrigger.create({ trigger: '.stories', start: 'top 75%', toggleClass: 'in-view' });
+gsap.utils.toArray('.interest-card').forEach((card, i) => {
+  const fromX = i % 2 === 0 ? -36 : 36;
+  gsap.fromTo(
+    card,
+    { opacity: 0, x: fromX, rotate: i % 2 === 0 ? -3 : 3 },
+    {
+      opacity: 1,
+      x: 0,
+      rotate: 0,
+      duration: 0.8,
+      delay: i * 0.08,
+      ease: 'power3.out',
+      scrollTrigger: { trigger: card, start: 'top 88%' },
+    }
+  );
+});
 
 /* ---------- Certificate cards: presented entrance, cursor tilt + shine, lightbox ---------- */
 gsap.utils.toArray('.cert-card').forEach((card, i) => {
@@ -362,6 +389,14 @@ function setupHorizontalScroll(sectionSel, trackSel, progressSel) {
   const cardEls = gsap.utils.toArray(track.children);
   gsap.set(cardEls, { opacity: 0, y: 36, scale: 0.94 });
 
+  // Active-card spotlight: once the intro stagger is done, whichever card is
+  // nearest the viewport center scales up + brightens while its neighbors dim —
+  // gives the cards their own continuous motion through the scroll-through,
+  // not just a single shared entrance plus the track sliding underneath them.
+  let introDone = false;
+  const cardScale = cardEls.map((el) => gsap.quickTo(el, 'scale', { duration: 0.3, ease: 'power2' }));
+  const cardOpacity = cardEls.map((el) => gsap.quickTo(el, 'opacity', { duration: 0.3, ease: 'power2' }));
+
   gsap.to(track, {
     x: () => -getMax(),
     ease: 'none',
@@ -375,6 +410,14 @@ function setupHorizontalScroll(sectionSel, trackSel, progressSel) {
       invalidateOnRefresh: true,
       onUpdate: (self) => {
         if (progress) progress.style.transform = `scaleX(${self.progress})`;
+        if (!introDone) return;
+        const centerX = window.innerWidth / 2;
+        cardEls.forEach((el, i) => {
+          const r = el.getBoundingClientRect();
+          const dist = Math.min(Math.abs(r.left + r.width / 2 - centerX) / (window.innerWidth / 2), 1);
+          cardScale[i](1 + (1 - dist) * 0.06);
+          cardOpacity[i](0.6 + (1 - dist) * 0.4);
+        });
       },
     },
   });
@@ -391,6 +434,7 @@ function setupHorizontalScroll(sectionSel, trackSel, progressSel) {
         duration: 0.7,
         ease: 'power3.out',
         stagger: 0.08,
+        onComplete: () => { introDone = true; },
       }),
   });
 }

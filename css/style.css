@@ -303,6 +303,9 @@ img, canvas { display: block; max-width: 100%; }
 .education { padding: 8rem clamp(1.25rem, 6vw, 6rem); }
 .education-inner { max-width: 1180px; }
 .education h2 { font-family: var(--font-display); font-size: clamp(1.9rem, 4.4vw, 3rem); font-weight: 600; margin: 0.8rem 0 2.5rem; }
+.gradient-wipe { position: relative; display: inline-block; }
+.gw-base { display: block; }
+.gw-fill { position: absolute; inset: 0; display: block; color: var(--ember); }
 .education-grid { display: grid; grid-template-columns: minmax(280px, 420px) 1fr; gap: 2.5rem; align-items: center; }
 
 .education-card {
@@ -364,7 +367,8 @@ img, canvas { display: block; max-width: 100%; }
 
 /* ===== Skills — rotating tile puzzle (sharp, edge-to-edge, no gaps) ===== */
 .skills { padding: 6rem clamp(1.25rem, 6vw, 6rem) 8rem; }
-.skills h2 { font-family: var(--font-display); font-size: clamp(1.9rem, 4.4vw, 3rem); font-weight: 600; margin: 0.8rem 0 3.5rem; }
+.skills h2 { font-family: var(--font-display); font-size: clamp(1.9rem, 4.4vw, 3rem); font-weight: 600; margin: 0.8rem 0 3.5rem; perspective: 600px; }
+.flip-char { display: inline-block; transform-origin: 50% 100%; }
 
 .skills-stage { position: relative; display: flex; align-items: center; justify-content: center; gap: 2.5rem; flex-wrap: wrap; }
 .skills-flank {
@@ -411,10 +415,20 @@ img, canvas { display: block; max-width: 100%; }
 .stat p { color: var(--ink-dim); font-size: 0.85rem; letter-spacing: 0.04em; }
 
 /* ===== Currently Exploring ===== */
-.stories { padding: 8rem clamp(1.25rem, 6vw, 6rem); }
+.stories { padding: 8rem clamp(1.25rem, 6vw, 6rem); position: relative; overflow: hidden; }
+.stories::before {
+  content: ''; position: absolute; top: -15%; right: -10%; width: 480px; height: 480px;
+  background: radial-gradient(circle, rgba(255, 90, 31, 0.14), transparent 70%);
+  opacity: 0; pointer-events: none; transition: opacity 1.4s ease;
+}
+.stories.in-view::before { opacity: 1; }
 .stories h2 { font-family: var(--font-display); font-size: clamp(1.9rem, 4.4vw, 3rem); max-width: 620px; margin-bottom: 3.5rem; font-weight: 600; }
 .interest-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.75rem; }
-.interest-card { background: var(--bg-2); border: 1px solid var(--line); border-radius: 18px; padding: 2rem; }
+.interest-card {
+  background: var(--bg-2); border: 1px solid var(--line); border-radius: 18px; padding: 2rem;
+  transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+}
+.interest-card:hover { transform: translateY(-6px); border-color: var(--ember); box-shadow: 0 24px 48px -28px rgba(255, 90, 31, 0.4); }
 .interest-card h3 { font-family: var(--font-display); font-size: 1.15rem; margin-bottom: 0.7rem; color: var(--ember-soft); }
 .interest-card:nth-child(even) h3 { color: var(--sage-soft); }
 .interest-card p { font-size: 0.95rem; line-height: 1.6; color: var(--ink-dim); }
