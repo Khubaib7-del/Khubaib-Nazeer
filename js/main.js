@@ -13,7 +13,7 @@ gsap.registerPlugin(ScrollTrigger);
 gsap.set('.reveal-line', { yPercent: 110 });
 
 /* ---------- Section boundaries: a drawn line marking the shift into each section ---------- */
-['#philosophy', '#education', '#skills', '#collection', '#process', '#stories', '#legacy'].forEach((sel) => {
+['#philosophy', '#education', '#skills', '#collection', '#certificates', '#stories', '#legacy'].forEach((sel) => {
   const section = document.querySelector(sel);
   if (!section) return;
   const boundary = document.createElement('div');
@@ -201,7 +201,7 @@ gsap.utils.toArray('.reveal-up').forEach((el) => {
 /* ---------- Philosophy: smoke-dissolve text reveal ---------- */
 applySmokeText('.split-text');
 applySmokeText(
-  '.education h2, .skills h2, .h-section-head h2, .stories h2, .legacy-text h2',
+  '.education h2, .skills h2, .h-section-head h2, .certificates-head h2, .stories h2, .legacy-text h2',
   { dissolveOut: false }
 );
 
@@ -265,6 +265,68 @@ if (!reducedMotion) {
   });
 }
 
+/* ---------- Certificate cards: presented entrance, cursor tilt + shine, lightbox ---------- */
+gsap.utils.toArray('.cert-card').forEach((card, i) => {
+  gsap.fromTo(
+    card,
+    { opacity: 0, y: 50, rotationX: -70, transformPerspective: 800 },
+    {
+      opacity: 1,
+      y: 0,
+      rotationX: 0,
+      duration: 0.9,
+      delay: i * 0.1,
+      ease: 'power3.out',
+      scrollTrigger: { trigger: card, start: 'top 85%' },
+    }
+  );
+});
+
+if (!reducedMotion) {
+  document.querySelectorAll('.cert-card-inner').forEach((inner) => {
+    const rotX = gsap.quickTo(inner, 'rotationX', { duration: 0.4, ease: 'power3' });
+    const rotY = gsap.quickTo(inner, 'rotationY', { duration: 0.4, ease: 'power3' });
+    const shine = inner.querySelector('.cert-card-shine');
+    inner.addEventListener('mousemove', (e) => {
+      const r = inner.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width;
+      const py = (e.clientY - r.top) / r.height;
+      rotX((py - 0.5) * -14);
+      rotY((px - 0.5) * 14);
+      if (shine) shine.style.background = `radial-gradient(circle at ${px * 100}% ${py * 100}%, rgba(255,255,255,0.35), transparent 55%)`;
+    });
+    inner.addEventListener('mouseleave', () => {
+      rotX(0);
+      rotY(0);
+      if (shine) shine.style.background = 'transparent';
+    });
+  });
+}
+
+const certModal = document.getElementById('cert-modal');
+const certModalImg = document.getElementById('cert-modal-img');
+const certModalClose = document.getElementById('cert-modal-close');
+function closeCertModal() {
+  certModal.classList.remove('open');
+  certModalImg.removeAttribute('src');
+  document.body.style.overflow = '';
+}
+document.querySelectorAll('.cert-card-frame img').forEach((img) => {
+  img.addEventListener('click', () => {
+    certModalImg.src = img.src;
+    certModalImg.alt = img.alt;
+    certModal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  });
+});
+certModalClose.addEventListener('click', closeCertModal);
+certModal.addEventListener('click', (e) => {
+  if (e.target === certModal) closeCertModal();
+});
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && certModal.classList.contains('open')) closeCertModal();
+});
+
 /* ---------- Horizontal scroll sections ---------- */
 function setupHorizontalScroll(sectionSel, trackSel, progressSel) {
   const section = document.querySelector(sectionSel);
@@ -312,7 +374,6 @@ function setupHorizontalScroll(sectionSel, trackSel, progressSel) {
   });
 }
 setupHorizontalScroll('#collection', '#collection-track', '#collection-progress');
-setupHorizontalScroll('#process', '#process-track', '#process-progress');
 
 /* ---------- Stat counters ---------- */
 gsap.utils.toArray('.stat-num').forEach((el) => {

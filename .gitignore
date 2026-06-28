@@ -15,3 +15,8 @@ assets/videos/*.mp4
 !assets/videos/cognivision.mp4
 !assets/videos/echo-drift.mp4
 !assets/videos/os-scheduler-visualizer.mp4
+
+# Local drop zone for new certificate images — copy the one you want live
+# into assets/certificates/ and add a .cert-card for it, this folder itself
+# isn't part of the deployed site.
+Course_Certificates/

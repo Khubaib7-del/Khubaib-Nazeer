@@ -41,7 +41,7 @@
   <a href="#education">Education</a>
   <a href="#skills">Skills</a>
   <a href="#collection">Projects</a>
-  <a href="#process">Process</a>
+  <a href="#certificates">Certificates</a>
   <a href="#contact">Contact</a>
 </div>
 
@@ -288,52 +288,30 @@
     </div>
   </section>
 
-  <!-- MY PROCESS — horizontal scroll -->
-  <section class="h-section" id="process">
-    <div class="h-section-head">
-      <span class="eyebrow reveal-up">03 — My Process</span>
-      <h2>No roadmap. <br>Just a loop.</h2>
+  <!-- CERTIFICATES -->
+  <section class="certificates" id="certificates">
+    <div class="certificates-head">
+      <span class="eyebrow reveal-up">03 — Certificates</span>
+      <h2 class="reveal-up">Proof I went and learned it.</h2>
     </div>
-    <div class="h-pin">
-      <div class="h-track" id="process-track">
+    <div class="cert-grid" id="cert-grid">
 
-        <article class="step-card">
-          <div class="step-icon">💡</div>
-          <span class="step-no">01</span>
-          <h3>Curiosity</h3>
-          <p>It starts with a "wait, how does that actually work?" moment — a buzzword, a weird bug, a cool demo.</p>
-        </article>
+      <article class="cert-card">
+        <div class="cert-card-inner">
+          <div class="cert-card-badge">★</div>
+          <div class="cert-card-glow"></div>
+          <div class="cert-card-frame">
+            <img src="assets/certificates/foundations-of-ai-engineering.jpg" alt="Foundations of AI Engineering certificate — Packt, via Coursera" loading="lazy">
+            <div class="cert-card-shine"></div>
+          </div>
+        </div>
+        <div class="cert-card-meta">
+          <h3>Foundations of AI Engineering</h3>
+          <p>Packt · via Coursera — Jun 2026</p>
+          <a href="https://coursera.org/verify/UCK2NXR06ZTV" target="_blank" rel="noopener" class="cert-card-verify">Verify ↗</a>
+        </div>
+      </article>
 
-        <article class="step-card">
-          <div class="step-icon">🛠</div>
-          <span class="step-no">02</span>
-          <h3>Build</h3>
-          <p>I start typing before I fully understand it. Tutorials get me 20% there — the rest is trial and error.</p>
-        </article>
-
-        <article class="step-card">
-          <div class="step-icon">💥</div>
-          <span class="step-no">03</span>
-          <h3>Break</h3>
-          <p>Something always breaks. Usually more than once. That's generally where the real learning starts.</p>
-        </article>
-
-        <article class="step-card">
-          <div class="step-icon">🔍</div>
-          <span class="step-no">04</span>
-          <h3>Debug</h3>
-          <p>Stack traces, print statements, talking to myself out loud — whatever it takes to find the actual bug.</p>
-        </article>
-
-        <article class="step-card">
-          <div class="step-icon">🚀</div>
-          <span class="step-no">05</span>
-          <h3>Ship</h3>
-          <p>Push it to GitHub, write it up, move on to the next curiosity. Then the loop starts again.</p>
-        </article>
-
-      </div>
-      <div class="h-progress"><span id="process-progress"></span></div>
     </div>
   </section>
 
@@ -407,6 +385,12 @@
     </div>
     <div id="video-modal-body"></div>
   </div>
+</div>
+
+<!-- Certificate lightbox -->
+<div class="cert-modal" id="cert-modal">
+  <button class="cert-modal-close" id="cert-modal-close" aria-label="Close certificate">&times;</button>
+  <img id="cert-modal-img" src="" alt="">
 </div>
 
 <script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>

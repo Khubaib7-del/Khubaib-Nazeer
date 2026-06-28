@@ -249,15 +249,55 @@ img, canvas { display: block; max-width: 100%; }
 #video-modal-body video { display: block; width: 100%; max-height: 70vh; background: #000; }
 #video-modal-body iframe { display: block; width: 100%; height: min(70vh, 600px); border: 0; background: #000; }
 
-/* Step cards */
-.step-card {
-  flex: 0 0 clamp(260px, 26vw, 340px); background: var(--bg-2); border: 1px solid var(--line);
-  border-radius: 18px; padding: 2.2rem; min-height: 320px; position: relative;
+/* ===== Certificates ===== */
+.certificates { padding: 8rem clamp(1.25rem, 6vw, 6rem); }
+.certificates-head { margin-bottom: 3.5rem; max-width: 620px; }
+.certificates-head h2 { font-family: var(--font-display); font-size: clamp(1.9rem, 4.4vw, 3rem); font-weight: 600; margin-top: 0.8rem; }
+.cert-grid { display: flex; flex-wrap: wrap; gap: 2.5rem; }
+
+.cert-card { width: clamp(260px, 30vw, 320px); }
+.cert-card-inner {
+  position: relative; perspective: 900px; transform-style: preserve-3d;
+  border-radius: 16px; will-change: transform;
 }
-.step-icon { font-size: 2rem; margin-bottom: 1.5rem; }
-.step-no { position: absolute; top: 1.6rem; right: 1.8rem; font-family: var(--font-display); color: var(--ink-dim); font-size: 0.8rem; }
-.step-card h3 { font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 0.8rem; }
-.step-card p { color: var(--ink-dim); font-size: 0.92rem; line-height: 1.6; }
+.cert-card-glow {
+  position: absolute; inset: -14px; z-index: -1; border-radius: 22px;
+  background: radial-gradient(circle, rgba(255, 90, 31, 0.35), transparent 70%);
+  opacity: 0; transition: opacity 0.4s; filter: blur(6px);
+}
+.cert-card-inner:hover .cert-card-glow { opacity: 1; }
+.cert-card-badge {
+  position: absolute; top: -14px; right: -14px; z-index: 2;
+  width: 36px; height: 36px; border-radius: 50%; background: var(--ember);
+  color: #0b0c0f; display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; box-shadow: 0 6px 18px -6px rgba(255, 90, 31, 0.7);
+  animation: certBadgeGlint 3.2s ease-in-out infinite;
+}
+@keyframes certBadgeGlint { 0%, 100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.12) rotate(8deg); } }
+.cert-card-frame {
+  position: relative; border-radius: 16px; overflow: hidden; border: 1px solid var(--line);
+  background: #fff; box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.7);
+}
+.cert-card-frame img { display: block; width: 100%; cursor: zoom-in; }
+.cert-card-shine { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: overlay; }
+.cert-card-meta { padding: 1.3rem 0.2rem 0; }
+.cert-card-meta h3 { font-family: var(--font-display); font-size: 1.05rem; margin-bottom: 0.3rem; }
+.cert-card-meta p { color: var(--ink-dim); font-size: 0.85rem; margin-bottom: 0.5rem; }
+.cert-card-verify { font-family: var(--font-mono); font-size: 0.78rem; color: var(--ember-soft); transition: color 0.25s; }
+.cert-card-verify:hover { color: var(--sage-soft); }
+
+/* Certificate lightbox */
+.cert-modal {
+  position: fixed; inset: 0; z-index: 600; display: none; align-items: center; justify-content: center;
+  background: rgba(8, 6, 5, 0.92); backdrop-filter: blur(8px); padding: 3rem 2rem;
+}
+.cert-modal.open { display: flex; }
+#cert-modal-img { max-width: min(1000px, 100%); max-height: 85vh; border-radius: 10px; box-shadow: 0 40px 100px -40px rgba(0, 0, 0, 0.8); }
+.cert-modal-close {
+  position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: none;
+  color: var(--ink); font-size: 2rem; line-height: 1; cursor: pointer; padding: 0.2rem 0.5rem;
+}
+.cert-modal-close:hover { color: var(--ember-soft); }
 
 /* ===== Education ===== */
 .education { padding: 8rem clamp(1.25rem, 6vw, 6rem); }
