@@ -58,7 +58,10 @@ export function applyScatterBounce(selector, opts = {}) {
       chars.push(span);
     });
 
-    const seeds = chars.map(() => {
+    // Base delay climbs with letter index (so the reveal has a visible left-to-right
+    // current you can follow, and scales with text length instead of always finishing
+    // in under a second) with random jitter layered on top for the "different pace" feel.
+    const seeds = chars.map((_, i) => {
       const angle = Math.random() * Math.PI * 2;
       const dist = spread * (0.5 + Math.random() * 0.5);
       return {
@@ -66,11 +69,11 @@ export function applyScatterBounce(selector, opts = {}) {
         y: Math.sin(angle) * dist,
         rot: (Math.random() - 0.5) * 60,
         duration: minDuration + Math.random() * (maxDuration - minDuration),
-        delay: Math.random() * maxDelay,
+        delay: i * 0.045 + Math.random() * maxDelay,
       };
     });
 
-    const tl = gsap.timeline({ scrollTrigger: { trigger: el, start: 'top 85%', once: true } });
+    const tl = gsap.timeline({ scrollTrigger: { trigger: el, start: 'top 70%', once: true } });
     chars.forEach((c, i) => {
       const s = seeds[i];
       tl.fromTo(
@@ -79,6 +82,27 @@ export function applyScatterBounce(selector, opts = {}) {
         { x: 0, y: 0, rotate: 0, opacity: 1, duration: s.duration, ease },
         s.delay
       );
+    });
+  });
+}
+
+// Rubber-stamp impact: scales/rotates down from oversized into place with an
+// overshoot bounce, like a stamp hitting paper — used for the Certificates
+// heading specifically, where that metaphor actually fits.
+export function applyStampIn(selector) {
+  document.querySelectorAll(selector).forEach((el) => {
+    if (reducedMotion) return;
+    ScrollTrigger.create({
+      trigger: el,
+      start: 'top 75%',
+      once: true,
+      onEnter: () => {
+        gsap.fromTo(
+          el,
+          { scale: 2.4, opacity: 0, rotate: -10 },
+          { scale: 1, opacity: 1, rotate: 0, duration: 0.7, ease: 'back.out(2.6)' }
+        );
+      },
     });
   });
 }

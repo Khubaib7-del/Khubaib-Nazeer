@@ -47,11 +47,22 @@ img, canvas { display: block; max-width: 100%; }
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 1.25rem;
 }
+.loader-logo { display: flex; align-items: center; gap: 0.9rem; position: relative; }
+.loader-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 2.4rem; height: 2.4rem; border: 1px solid var(--line); border-radius: 8px;
+  font-family: var(--font-mono); font-size: 0.95rem; color: var(--ember-soft);
+}
+.loader-icon-l, .loader-icon-r { display: inline-block; }
 .loader-mark {
   font-family: var(--font-display); font-weight: 700; letter-spacing: 0.35em;
-  font-size: clamp(1.1rem, 3vw, 1.6rem); color: var(--ink);
+  font-size: clamp(1.1rem, 3vw, 1.6rem); color: var(--ink); position: relative;
 }
 .loader-char { display: inline-block; }
+.loader-dash {
+  position: absolute; width: 9px; height: 2px; border-radius: 2px;
+  background: var(--ember-soft); opacity: 0; pointer-events: none;
+}
 .loader-bar { width: min(280px, 60vw); height: 2px; background: var(--line); position: relative; overflow: hidden; }
 .loader-bar span { position: absolute; left: 0; top: 0; bottom: 0; width: 0%; background: var(--ember); transition: width 0.15s linear; }
 .loader-pct { font-size: 0.75rem; color: var(--ink-dim); letter-spacing: 0.1em; }
@@ -265,6 +276,10 @@ img, canvas { display: block; max-width: 100%; }
   position: absolute; inset: -14px; z-index: -1; border-radius: 22px;
   background: radial-gradient(circle, rgba(255, 90, 31, 0.35), transparent 70%);
   opacity: 0; transition: opacity 0.4s; filter: blur(6px);
+}
+.cert-stamp-ring {
+  position: absolute; inset: 0; border: 2px solid var(--ember); border-radius: 16px;
+  pointer-events: none; opacity: 0;
 }
 .cert-card-inner:hover .cert-card-glow { opacity: 1; }
 .cert-card-badge {

@@ -1,7 +1,7 @@
 import { initRoomScene } from './room-scene.js';
 import { initPixelArt } from './pixel-art.js';
 import { applySmokeText } from './smoke-text.js';
-import { applyGradientWipe, applyScatterBounce } from './text-effects.js';
+import { applyGradientWipe, applyScatterBounce, applyStampIn } from './text-effects.js';
 import { initCourseRing } from './course-ring.js';
 import { initSkillsPuzzle } from './skills-puzzle.js';
 
@@ -72,11 +72,15 @@ ScrollTrigger.config({ ignoreMobileResize: true });
 function runLoader() {
   const loader = document.getElementById('loader');
   const mark = document.querySelector('.loader-mark');
+  const iconL = document.querySelector('.loader-icon-l');
+  const iconR = document.querySelector('.loader-icon-r');
   const fill = document.getElementById('loader-progress');
   const pct = document.getElementById('loader-pct');
 
-  // Logo-style entrance for the name itself, instead of it just sitting there
-  // static while only the bar underneath it moves.
+  // Logo-style entrance: the bracket icon assembles from its two halves
+  // sliding in from opposite sides, then the name sweeps from dim to full
+  // color left-to-right as it settles, with a few drifting accent dashes —
+  // instead of the name just sitting there static while only the bar moves.
   const chars = [...mark.textContent].map((ch) => {
     const span = document.createElement('span');
     span.className = 'loader-char';
@@ -85,11 +89,32 @@ function runLoader() {
   });
   mark.innerHTML = '';
   chars.forEach((c) => mark.appendChild(c));
-  gsap.fromTo(
-    chars,
-    { opacity: 0, y: 16, scale: 0.6 },
-    { opacity: 1, y: 0, scale: 1, duration: 0.5, stagger: 0.035, ease: 'back.out(1.8)' }
-  );
+
+  const dashes = [];
+  for (let i = 0; i < 5; i++) {
+    const d = document.createElement('span');
+    d.className = 'loader-dash';
+    d.style.top = 10 + Math.random() * 80 + '%';
+    d.style.left = -6 + Math.random() * 112 + '%';
+    mark.appendChild(d);
+    dashes.push(d);
+  }
+
+  gsap
+    .timeline()
+    .fromTo(iconL, { x: -28, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: 'power3.out' })
+    .fromTo(iconR, { x: 28, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: 'power3.out' }, '<')
+    .fromTo(
+      chars,
+      { opacity: 0, y: 10, scale: 0.85, color: '#9d9890' },
+      { opacity: 1, y: 0, scale: 1, color: '#f3f0e9', duration: 0.45, stagger: 0.035, ease: 'power2.out' },
+      '-=0.1'
+    )
+    .fromTo(dashes, { opacity: 0, scale: 0.4 }, { opacity: 0.8, scale: 1, duration: 0.4, stagger: 0.06, ease: 'power1.out' }, '-=0.3');
+
+  dashes.forEach((d, i) => {
+    gsap.to(d, { y: '+=10', duration: 1.4 + Math.random(), repeat: -1, yoyo: true, ease: 'sine.inOut', delay: i * 0.15 });
+  });
 
   let p = 0;
   const tick = setInterval(() => {
@@ -261,9 +286,10 @@ gsap.utils.toArray('.reveal-up').forEach((el) => {
 
 /* ---------- Heading reveals: deliberately different techniques per section ---------- */
 applySmokeText('.split-text'); // Philosophy: full smoke in-then-out, the section's signature effect
-applySmokeText('.certificates-head h2, .legacy-text h2', { dissolveOut: false }); // bookend sections stay calm
+applySmokeText('.legacy-text h2', { dissolveOut: false }); // finale stays calm
+applyStampIn('.certificates-head h2'); // rubber-stamp impact — fits the "certificate" metaphor
 applyGradientWipe('.education h2'); // ember color sweep
-applyScatterBounce('.skills h2', { spread: 80, ease: 'bounce.out', minDuration: 0.4, maxDuration: 0.8, maxDelay: 0.35 }); // tight, snappy bounce — ties to the puzzle below it
+applyScatterBounce('.skills h2', { spread: 90, ease: 'bounce.out', minDuration: 0.6, maxDuration: 1.2, maxDelay: 0.5 }); // tight, snappy bounce — ties to the puzzle below it
 gsap.utils.toArray('.h-section-head h2').forEach((el) => {
   gsap.fromTo(
     el,
@@ -271,7 +297,7 @@ gsap.utils.toArray('.h-section-head h2').forEach((el) => {
     { clipPath: 'inset(0 0% 0 0)', ease: 'none', scrollTrigger: { trigger: el, start: 'top 85%', end: 'top 50%', scrub: true } }
   );
 }); // Projects: curtain-wipe mask
-applyScatterBounce('.stories h2', { spread: 170, ease: 'elastic.out(1, 0.5)', minDuration: 0.7, maxDuration: 1.4, maxDelay: 0.6 }); // wide, loose elastic wobble
+applyScatterBounce('.stories h2', { spread: 180, ease: 'elastic.out(1, 0.5)', minDuration: 1.0, maxDuration: 1.9, maxDelay: 0.8 }); // wide, loose elastic wobble
 
 gsap.to('.philosophy-bg', {
   backgroundPosition: '100% 50%',
@@ -352,21 +378,24 @@ gsap.utils.toArray('.interest-card').forEach((card, i) => {
   );
 });
 
-/* ---------- Certificate cards: presented entrance, cursor tilt + shine, lightbox ---------- */
+/* ---------- Certificate cards: stamp-impact entrance, cursor tilt + shine, lightbox ---------- */
 gsap.utils.toArray('.cert-card').forEach((card, i) => {
-  gsap.fromTo(
-    card,
-    { opacity: 0, y: 50, rotationX: -70, transformPerspective: 800 },
-    {
-      opacity: 1,
-      y: 0,
-      rotationX: 0,
-      duration: 0.9,
-      delay: i * 0.1,
-      ease: 'power3.out',
-      scrollTrigger: { trigger: card, start: 'top 85%' },
-    }
-  );
+  const inner = card.querySelector('.cert-card-inner');
+  const ring = document.createElement('div');
+  ring.className = 'cert-stamp-ring';
+  inner.appendChild(ring);
+
+  ScrollTrigger.create({
+    trigger: card,
+    start: 'top 80%',
+    once: true,
+    onEnter: () => {
+      gsap
+        .timeline({ delay: i * 0.12 })
+        .fromTo(card, { opacity: 0, scale: 1.6, rotate: -8, y: 30 }, { opacity: 1, scale: 1, rotate: 0, y: 0, duration: 0.6, ease: 'back.out(2.2)' })
+        .fromTo(ring, { scale: 0.4, opacity: 0.8 }, { scale: 1.6, opacity: 0, duration: 0.5, ease: 'power2.out' }, '-=0.25');
+    },
+  });
 });
 
 if (!reducedMotion) {
