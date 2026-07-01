@@ -110,3 +110,36 @@ export function applyStampIn(selector) {
     });
   });
 }
+
+// Per-word slide-in from left: each word starts faded + offset left, then
+// settles into its natural position with a left-to-right stagger.
+export function applyWordSlideIn(selector, opts = {}) {
+  if (reducedMotion) return;
+  const {
+    stagger  = 0.09,
+    duration = 0.6,
+    x        = -30,
+    ease     = 'power2.out',
+    start    = 'top 82%',
+  } = opts;
+
+  document.querySelectorAll(selector).forEach((el) => {
+    el.innerHTML = el.textContent
+      .trim()
+      .split(/\s+/)
+      .map(w => `<span class="wsi" style="display:inline-block">${w}</span>`)
+      .join(' ');
+
+    const words = [...el.querySelectorAll('.wsi')];
+    gsap.set(words, { opacity: 0, x });
+
+    ScrollTrigger.create({
+      trigger: el,
+      start,
+      once: true,
+      onEnter() {
+        gsap.to(words, { opacity: 1, x: 0, duration, ease, stagger });
+      },
+    });
+  });
+}

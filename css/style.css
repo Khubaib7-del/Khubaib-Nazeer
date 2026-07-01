@@ -266,50 +266,90 @@ img, canvas { display: block; max-width: 100%; }
 .certificates-head { margin-bottom: 3.5rem; max-width: 620px; }
 .certificates-head h2 { font-family: var(--font-display); font-size: clamp(1.9rem, 4.4vw, 3rem); font-weight: 600; margin-top: 0.8rem; }
 
-/* Default layout — flex row, becomes a pinned stack when JS adds --active class */
-.cert-stack { display: flex; flex-wrap: wrap; gap: 2.5rem; position: relative; overflow: visible; }
-.cert-stack--active { display: block; }
-.cert-stack--active .cert-card { position: absolute; top: 0; left: 50%; }
+/* When JS activates the stacked deck: section becomes full-viewport, centered */
+.cert-section--stacked {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: clip;              /* cards enter from section bottom — clip hides them until they rise */
+  padding-top: clamp(2rem, 4vh, 3rem);
+  padding-bottom: clamp(2rem, 4vh, 3rem);
+}
+.cert-section--stacked .certificates-head { margin-bottom: 1.5rem; text-align: center; max-width: 100%; }
 
-/* Scroll counter — hidden until stack is active with 2+ cards */
-.cert-stack-nav { display: none; align-items: center; gap: 1.2rem; margin-top: 2rem; }
-.cert-stack--active ~ .cert-stack-nav { display: flex; }
-.cert-stack-count { font-family: var(--font-mono); font-size: 0.82rem; color: var(--ember-soft); }
+/* Default layout — flex row. Becomes a pinned stack when JS adds --active */
+.cert-stack { display: flex; flex-wrap: wrap; gap: 2.5rem; position: relative; }
+.cert-stack--active {
+  display: block;
+  position: relative;
+  overflow: visible;
+  align-self: center;
+  width: clamp(340px, 54vw, 560px);
+}
+.cert-stack--active .cert-card { position: absolute; top: 0; left: 50%; width: 100%; }
+
+/* Scroll counter */
+.cert-stack-nav { display: none; align-items: center; gap: 1.2rem; margin-top: 2.5rem; justify-content: center; }
+.cert-section--stacked .cert-stack-nav { display: flex; }
+.cert-stack-count { font-family: var(--font-mono); font-size: 0.85rem; color: var(--ember-soft); letter-spacing: 0.05em; }
 .cert-stack-hint { font-size: 0.8rem; color: var(--ink-dim); }
 
+/* Card */
 .cert-card { width: clamp(280px, 36vw, 380px); }
+.cert-stack--active .cert-card { width: 100%; }
 .cert-card-inner {
-  position: relative; perspective: 900px; transform-style: preserve-3d;
-  border-radius: 16px; will-change: transform;
+  position: relative;
+  will-change: transform;
 }
 .cert-card-glow {
-  position: absolute; inset: -14px; z-index: -1; border-radius: 22px;
-  background: radial-gradient(circle, rgba(255, 90, 31, 0.35), transparent 70%);
-  opacity: 0; transition: opacity 0.4s; filter: blur(6px);
+  position: absolute; inset: -14px; z-index: -1; border-radius: 8px;
+  background: radial-gradient(circle, rgba(255, 90, 31, 0.3), transparent 70%);
+  opacity: 0; transition: opacity 0.4s; filter: blur(8px);
 }
 .cert-card-inner:hover .cert-card-glow { opacity: 1; }
-.cert-card-badge {
-  position: absolute; top: -14px; right: -14px; z-index: 2;
-  width: 36px; height: 36px; border-radius: 50%; background: var(--ember);
-  color: #0b0c0f; display: flex; align-items: center; justify-content: center;
-  font-size: 1rem; box-shadow: 0 6px 18px -6px rgba(255, 90, 31, 0.7);
-  animation: certBadgeGlint 3.2s ease-in-out infinite;
-}
-@keyframes certBadgeGlint { 0%, 100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.12) rotate(8deg); } }
+
+/* Sharp edges in stack mode */
 .cert-card-frame {
-  position: relative; border-radius: 16px; overflow: hidden; border: 1px solid var(--line);
-  background: #fff; box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.7);
+  position: relative; overflow: hidden;
+  border: 1px solid var(--line); background: #fff;
+  box-shadow: 0 24px 64px -20px rgba(0,0,0,0.75);
+  cursor: zoom-in;
+  /* default rounding for non-stack layout */
+  border-radius: 12px;
 }
+.cert-stack--active .cert-card-frame { border-radius: 0; }
 .cert-card-frame img {
-  display: block; width: 100%; cursor: zoom-in;
+  display: block; width: 100%; pointer-events: none;
   aspect-ratio: 4 / 3; object-fit: cover;
 }
+
+/* Hover overlay — dark top-edge tint so the verify link is readable */
+.cert-card-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(6,4,3,0.72) 0%, rgba(6,4,3,0.18) 38%, transparent 60%);
+  opacity: 0; transition: opacity 0.28s ease;
+  pointer-events: none;
+}
+.cert-card-inner:hover .cert-card-overlay { opacity: 1; pointer-events: auto; }
+
+/* Verify link anchored top-left — visible in the peeking strip above the main card */
+.cert-card-verify {
+  position: absolute;
+  top: 13px; left: 14px;
+  font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.04em;
+  color: #f3f0e9;
+  text-decoration: none;
+  padding: 4px 9px;
+  background: rgba(6,4,3,0.55);
+  border: 1px solid rgba(243,240,233,0.28);
+  border-radius: 3px;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  pointer-events: auto;       /* clickable even when overlay has pointer-events:none */
+}
+.cert-card-verify:hover { background: var(--ember-soft); color: #fff; border-color: var(--ember-soft); }
+
 .cert-card-shine { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: overlay; }
-.cert-card-meta { padding: 1.3rem 0.2rem 0; }
-.cert-card-meta h3 { font-family: var(--font-display); font-size: 1.05rem; margin-bottom: 0.3rem; }
-.cert-card-meta p { color: var(--ink-dim); font-size: 0.85rem; margin-bottom: 0.5rem; }
-.cert-card-verify { font-family: var(--font-mono); font-size: 0.78rem; color: var(--ember-soft); transition: color 0.25s; }
-.cert-card-verify:hover { color: var(--sage-soft); }
 
 /* Certificate lightbox */
 .cert-modal {

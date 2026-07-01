@@ -1,7 +1,7 @@
 import { initRoomScene } from './room-scene.js';
 import { initPixelArt } from './pixel-art.js';
 import { applySmokeText } from './smoke-text.js';
-import { applyGradientWipe, applyScatterBounce, applyStampIn } from './text-effects.js';
+import { applyGradientWipe, applyScatterBounce, applyStampIn, applyWordSlideIn } from './text-effects.js';
 import { initCourseRing } from './course-ring.js';
 import { initSkillsPuzzle } from './skills-puzzle.js';
 
@@ -55,7 +55,7 @@ if (!reducedMotion && window.matchMedia('(pointer: fine)').matches) {
     ringY(e.clientY);
   });
 
-  document.querySelectorAll('a, button, .skill-chip, .cert-card-frame img').forEach((el) => {
+  document.querySelectorAll('a, button, .skill-chip, .cert-card-frame').forEach((el) => {
     el.addEventListener('mouseenter', () => ring.classList.add('is-active'));
     el.addEventListener('mouseleave', () => ring.classList.remove('is-active'));
   });
@@ -313,7 +313,9 @@ gsap.utils.toArray('.reveal-up').forEach((el) => {
 /* ---------- Heading reveals: deliberately different techniques per section ---------- */
 applySmokeText('.split-text'); // Philosophy: full smoke in-then-out, the section's signature effect
 applySmokeText('.legacy-text h2', { dissolveOut: false }); // finale stays calm
-applyStampIn('.certificates-head h2'); // rubber-stamp impact — fits the "certificate" metaphor
+// Certificates: eyebrow slides in first, then h2 words flow L→R
+applyWordSlideIn('.certificates-head .eyebrow', { stagger: 0.07, duration: 0.45, x: -22, start: 'top 88%' });
+applyWordSlideIn('.certificates-head h2', { stagger: 0.1, duration: 0.65, x: -32, start: 'top 82%' });
 applyGradientWipe('.education h2'); // ember color sweep
 applyScatterBounce('.skills h2', { spread: 90, ease: 'bounce.out', minDuration: 0.4, maxDuration: 0.7, cascade: 0.35, jitter: 0.1 }); // tight, snappy bounce — ties to the puzzle below it
 gsap.utils.toArray('.h-section-head h2').forEach((el) => {
@@ -436,8 +438,12 @@ function closeCertModal() {
   certModalImg.removeAttribute('src');
   document.body.style.overflow = '';
 }
-document.querySelectorAll('.cert-card-frame img').forEach((img) => {
-  img.addEventListener('click', () => {
+// Click anywhere on the card frame (but not the verify link) opens the lightbox.
+document.querySelectorAll('.cert-card-frame').forEach((frame) => {
+  frame.addEventListener('click', (e) => {
+    if (e.target.closest('.cert-card-verify')) return;
+    const img = frame.querySelector('img');
+    if (!img) return;
     certModalImg.src = img.src;
     certModalImg.alt = img.alt;
     certModal.classList.add('open');
@@ -452,95 +458,105 @@ window.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && certModal.classList.contains('open')) closeCertModal();
 });
 
-/* ---------- Certificate deck: pinned stacked-card scroll ---------- */
+/* ---------- Certificate deck: build-from-bottom stacking scroll ----------
+   Cards rise from below one by one. Each new arrival becomes the main card
+   (y = 0, front of stack). Previous cards are pushed UPWARD and peek as
+   horizontal strips above the main card — like a fanned deck held from below.
+   Total scroll ≈ 2.2 viewports; full stack is visible after ~1.5 viewports.
+-------------------------------------------------------------------------- */
 function setupCertStack() {
   const wrapper = document.getElementById('cert-stack');
-  const nav = document.getElementById('cert-stack-nav');
   const countEl = document.getElementById('cert-stack-count');
   if (!wrapper) return;
 
   const cards = [...wrapper.querySelectorAll('.cert-card')];
-  if (cards.length < 2) {
-    // Single card — simple slide-up entrance, no pin needed.
-    if (cards[0]) {
-      gsap.from(cards[0], { opacity: 0, y: 40, duration: 0.7, ease: 'power3.out',
-        scrollTrigger: { trigger: cards[0], start: 'top 82%', once: true } });
-    }
-    return;
-  }
+  if (!cards.length) return;
 
-  // Switch wrapper to absolute-positioning mode.
+  const section = document.querySelector('#certificates');
+
   wrapper.classList.add('cert-stack--active');
-  const cardW = cards[0].offsetWidth;
+  section.classList.add('cert-section--stacked');
+
+  const N     = cards.length;
   const cardH = cards[0].offsetHeight;
-  const peek = 18;      // px each successive card peeks below the one in front
-  const scaleStep = 0.048; // how much smaller each card in the stack appears
-  const dimStep = 0.18;    // opacity drop per depth level
 
-  // Give the wrapper an explicit height so the pinned section has a defined
-  // size — actual card height + enough peek for the full stack depth.
-  wrapper.style.height = (cardH + (cards.length - 1) * peek) + 'px';
+  const Y_PEEK = 62;   // px each older card peeks above the main card
+  const SC     = 0.07; // scale reduction per depth level above
 
-  // Position all cards absolutely in their stacked state.
+  // Push wrapper down so the peek zone above it doesn't overlap the heading.
+  const peekAbove = (N - 1) * Y_PEEK;
+  wrapper.style.height    = cardH + 'px';
+  wrapper.style.marginTop = peekAbove + 'px';
+
+  // Compute start position: cards begin just below the section's bottom edge.
+  // The section uses overflow:clip, so anything below the section boundary
+  // is invisible. Cards rise from there — the full travel is visible as they
+  // emerge from the section bottom, and the black background shows below them
+  // throughout the animation.
+  const sR   = section.getBoundingClientRect();
+  const wR   = wrapper.getBoundingClientRect();
+  const wtis = wR.top - sR.top;                 // wrapper top inside section (px from section top)
+  const startY = window.innerHeight - wtis + 8; // 8px below section bottom → immediately clipped
+
+  // z-index: card[i+1] renders in front of card[i].
+  // The LAST card (i = N-1) has highest z-index → it is always the main card.
   cards.forEach((card, i) => {
     gsap.set(card, {
-      xPercent: -50,
-      y: i * peek,
-      scale: 1 - i * scaleStep,
-      opacity: Math.max(0.45, 1 - i * dimStep),
-      zIndex: cards.length - i,
-      transformOrigin: 'center bottom',
+      xPercent:        -50,
+      y:               startY,
+      scale:           1,
+      opacity:         1,   // no fade — viewport clipping hides cards while off-screen
+      zIndex:          i + 1,
+      transformOrigin: 'center top', // top-anchored so peek strip stays exactly Y_PEEK tall
     });
   });
 
-  const section = document.querySelector('#certificates');
-  const scrollPerCard = window.innerHeight;
+  const cardDur    = 0.85;
+  const stagger    = 0.2;
+  const holdTime   = 0.6;   // extra hold after last card lands
+  const totalDur   = (N - 1) * stagger + cardDur + holdTime;
+  const totalScroll = Math.round(window.innerHeight * 2.2);
 
   const tl = gsap.timeline({
     scrollTrigger: {
-      trigger: section,
-      pin: true,
+      trigger:    section,
+      pin:        true,
       pinSpacing: true,
-      scrub: 1,
-      start: 'top top',
-      end: `+=${(cards.length - 1) * scrollPerCard}`,
+      scrub:      1,
+      start:      'top top',
+      end:        `+=${totalScroll}`,
       onUpdate(self) {
         if (!countEl) return;
-        // Which card is currently "active" (front of stack)?
-        const idx = Math.min(Math.floor(self.progress * cards.length), cards.length - 1);
-        countEl.textContent = `${idx + 1} / ${cards.length}`;
+        const elapsed = self.progress * totalDur;
+        let landed = 0;
+        for (let i = 0; i < N; i++) {
+          if (elapsed >= i * stagger + cardDur * 0.85) landed = i + 1;
+        }
+        countEl.textContent = `${Math.min(landed, N)} / ${N}`;
       },
     },
   });
 
-  // For each card except the last: animate it out, then advance remaining cards.
   cards.forEach((card, i) => {
-    if (i === cards.length - 1) return;
-    const pos = i; // timeline position (each transition occupies 1 unit)
-
-    // Front card exits: shoots up, rotates slightly, fades.
+    // New card rises from below and becomes the main card at y = 0.
     tl.to(card, {
-      y: -(cardH * 1.4),
-      opacity: 0,
-      scale: 0.88,
-      rotate: (Math.random() - 0.5) * 6, // small random tilt on exit
-      ease: 'power2.in',
-      duration: 1,
-    }, pos);
+      y:        0,
+      scale:    1,
+      duration: cardDur,
+      ease:     'power3.out',
+    }, i * stagger);
 
-    // Remaining cards advance one slot each.
-    cards.slice(i + 1).forEach((c, j) => {
-      tl.to(c, {
-        y: j * peek,
-        scale: 1 - j * scaleStep,
-        opacity: Math.max(0.45, 1 - j * dimStep),
-        ease: 'power2.out',
-        duration: 1,
-      }, pos);
-    });
+    // All previously landed cards shift one step upward.
+    for (let j = 0; j < i; j++) {
+      const depth = i - j;
+      tl.to(cards[j], {
+        y:        -(depth * Y_PEEK),
+        scale:    1 - depth * SC,
+        duration: cardDur,
+        ease:     'power2.out',
+      }, i * stagger);
+    }
   });
-
-  // Mouse tilt + shine stays active on the front card only (already wired below).
 }
 
 /* ---------- Horizontal scroll sections ---------- */
