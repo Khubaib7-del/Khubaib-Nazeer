@@ -59,10 +59,6 @@ img, canvas { display: block; max-width: 100%; }
   font-size: clamp(1.1rem, 3vw, 1.6rem); color: var(--ink); position: relative;
 }
 .loader-char { display: inline-block; }
-.loader-dash {
-  position: absolute; width: 9px; height: 2px; border-radius: 2px;
-  background: var(--ember-soft); opacity: 0; pointer-events: none;
-}
 .loader-bar { width: min(280px, 60vw); height: 2px; background: var(--line); position: relative; overflow: hidden; }
 .loader-bar span { position: absolute; left: 0; top: 0; bottom: 0; width: 0%; background: var(--ember); transition: width 0.15s linear; }
 .loader-pct { font-size: 0.75rem; color: var(--ink-dim); letter-spacing: 0.1em; }

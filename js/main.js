@@ -4,6 +4,7 @@ import { applySmokeText } from './smoke-text.js';
 import { applyGradientWipe, applyScatterBounce, applyStampIn, applyWordSlideIn } from './text-effects.js';
 import { initCourseRing } from './course-ring.js';
 import { initSkillsPuzzle } from './skills-puzzle.js';
+import { buildCertificateCards } from './certificates.js';
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -13,6 +14,17 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matc
 window.addEventListener('pageshow', () => window.scrollTo(0, 0));
 
 gsap.registerPlugin(ScrollTrigger);
+
+// Start the loader animation immediately — it's self-contained (own GSAP
+// timeline + interval), so it doesn't need to wait on anything below.
+runLoader();
+
+// Certificates are discovered from assets/certificates/ at runtime (see
+// certificates.js) rather than hardcoded in this file, so the DOM has to be
+// populated before any ScrollTrigger below measures the page. Top-level
+// await in a module pauses the rest of this file until it resolves, which
+// also keeps the pin-ordering rule below intact without reshuffling code.
+await buildCertificateCards();
 
 // Real bug found via testing (confirmed with direct ScrollTrigger.start
 // inspection): every trigger positioned after #collection was being created
@@ -103,10 +115,11 @@ function runLoader() {
   const fill = document.getElementById('loader-progress');
   const pct = document.getElementById('loader-pct');
 
-  // Logo-style entrance: the bracket icon assembles from its two halves
-  // sliding in from opposite sides, then the name sweeps from dim to full
-  // color left-to-right as it settles, with a few drifting accent dashes —
-  // instead of the name just sitting there static while only the bar moves.
+  // Logo-style entrance: the bracket icon starts merged in the middle (its
+  // two halves overlapping, as if "</>" were collapsed into one point) then
+  // springs apart into place, and the name sweeps in from dim to full color
+  // right after — instead of the name just sitting there static while only
+  // the bar moves.
   const chars = [...mark.textContent].map((ch) => {
     const span = document.createElement('span');
     span.className = 'loader-char';
@@ -116,31 +129,16 @@ function runLoader() {
   mark.innerHTML = '';
   chars.forEach((c) => mark.appendChild(c));
 
-  const dashes = [];
-  for (let i = 0; i < 5; i++) {
-    const d = document.createElement('span');
-    d.className = 'loader-dash';
-    d.style.top = 10 + Math.random() * 80 + '%';
-    d.style.left = -6 + Math.random() * 112 + '%';
-    mark.appendChild(d);
-    dashes.push(d);
-  }
-
   gsap
     .timeline()
-    .fromTo(iconL, { x: -28, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: 'power3.out' })
-    .fromTo(iconR, { x: 28, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: 'power3.out' }, '<')
+    .fromTo(iconL, { x: 10, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: 'power3.out' })
+    .fromTo(iconR, { x: -10, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: 'power3.out' }, '<')
     .fromTo(
       chars,
       { opacity: 0, y: 10, scale: 0.85, color: '#9d9890' },
       { opacity: 1, y: 0, scale: 1, color: '#f3f0e9', duration: 0.45, stagger: 0.035, ease: 'power2.out' },
-      '-=0.1'
-    )
-    .fromTo(dashes, { opacity: 0, scale: 0.4 }, { opacity: 0.8, scale: 1, duration: 0.4, stagger: 0.06, ease: 'power1.out' }, '-=0.3');
-
-  dashes.forEach((d, i) => {
-    gsap.to(d, { y: '+=10', duration: 1.4 + Math.random(), repeat: -1, yoyo: true, ease: 'sine.inOut', delay: i * 0.15 });
-  });
+      '-=0.15'
+    );
 
   let p = 0;
   const tick = setInterval(() => {
@@ -478,6 +476,7 @@ function setupCertStack() {
   section.classList.add('cert-section--stacked');
 
   const N     = cards.length;
+  if (countEl) countEl.textContent = `1 / ${N}`; // HTML ships a "1 / 1" placeholder — correct it before any scroll happens
   const cardH = cards[0].offsetHeight;
 
   const Y_PEEK = 62;   // px each older card peeks above the main card
@@ -515,7 +514,10 @@ function setupCertStack() {
   const stagger    = 0.2;
   const holdTime   = 0.6;   // extra hold after last card lands
   const totalDur   = (N - 1) * stagger + cardDur + holdTime;
-  const totalScroll = Math.round(window.innerHeight * 2.2);
+  // Scale with card count instead of a fixed 2.2 viewports — a fixed distance
+  // meant one certificate finished landing almost immediately, then held the
+  // pin through a long stretch of scroll with nothing happening on screen.
+  const totalScroll = Math.round(window.innerHeight * (0.7 + 0.55 * N));
 
   const tl = gsap.timeline({
     scrollTrigger: {
@@ -729,5 +731,4 @@ ScrollTrigger.create({
 });
 
 /* ---------- Kick off ---------- */
-runLoader();
 window.addEventListener('load', () => ScrollTrigger.refresh());

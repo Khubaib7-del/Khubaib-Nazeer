@@ -12,7 +12,8 @@ Thumbs.db
 assets/videos/*.mp4
 !assets/videos/*-web.mp4
 
-# Local drop zone for new certificate images — copy the one you want live
-# into assets/certificates/ and add a .cert-card for it, this folder itself
-# isn't part of the deployed site.
+# Local drop zone for candidate certificate images not ready to publish yet.
+# To go live: copy the file into assets/certificates/ and name it the next
+# number (1.jpg, 2.jpg, ...) — js/certificates.js auto-discovers it, no code
+# edits needed. This folder itself isn't part of the deployed site.
 Course_Certificates/

@@ -385,19 +385,36 @@ export function initRoomScene(canvas) {
   function computeResponsive() {
     const aspect = window.innerWidth / window.innerHeight;
     if (aspect < 0.6) {
-      baseCameraZ = 13.5;
+      // Worst of all four tiers, confirmed on an actual phone viewport
+      // (375x812): the bookshelf (left) AND the painting (right) both
+      // projected outside the frame at once — the room's flat baseCameraZ
+      // here was tuned for a taller phone-ish aspect than the range this
+      // tier actually covers all the way down to. Same continuous fix.
+      baseCameraZ = Math.max(13.5, 9.2 / aspect - 0.75);
       baseGroupX = 0;
       baseGroupY = -1.85; // push the room down so it sits below the hero copy, not behind it
     } else if (aspect < 0.85) {
-      baseCameraZ = 12.5;
+      baseCameraZ = Math.max(12.5, 10.75 / aspect - 0.75);
       baseGroupX = 0.4;
       baseGroupY = -1.6;
     } else if (aspect < 1.3) {
-      baseCameraZ = 10.5;
+      // Same clipping issue as the tier below, confirmed the same way
+      // (aspect ~0.85-1, e.g. a 1000x1050 window: painting projected well
+      // past the right edge). Same fix — scale with aspect, floor at the
+      // original constant.
+      baseCameraZ = Math.max(10.5, 15.5 / aspect - 0.75);
       baseGroupX = 1.6;
       baseGroupY = 0;
     } else {
-      baseCameraZ = 9;
+      // A flat baseCameraZ=9 was only tuned for genuinely wide screens
+      // (~16:9, aspect ~1.8+) — verified via camera-space projection that at
+      // common 16:10-ish laptop widths lower in this same tier (aspect
+      // ~1.3-1.6, e.g. 1440x900, 1280x800), the wall painting's projected
+      // screen X exceeds innerWidth, i.e. it's genuinely clipped off the
+      // right edge, not just visually tight. Scale distance continuously
+      // with aspect instead of one constant so it stays in frame throughout;
+      // clamp to the validated 9 as a floor so wide screens don't change.
+      baseCameraZ = Math.max(9, 17.6 / aspect - 0.75);
       baseGroupX = 2.1;
       baseGroupY = 0;
     }
