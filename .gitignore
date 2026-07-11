@@ -17,3 +17,4 @@ assets/videos/*.mp4
 # number (1.jpg, 2.jpg, ...) — js/certificates.js auto-discovers it, no code
 # edits needed. This folder itself isn't part of the deployed site.
 Course_Certificates/
+.claude/
