@@ -3,7 +3,7 @@
 Personal portfolio site for Khubaib Nazeer, CS undergrad at FAST NUCES Lahore.
 Plain HTML/CSS/JS — no build step, no framework.
 
-**Live:** https://khubaib7-del.github.io/Khubaib-Nazeer-Protfolio/
+**Live:** https://khubaib-nazeer-protfolio.vercel.app/
 
 ## Stack
 
