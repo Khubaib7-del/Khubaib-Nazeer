@@ -8,5 +8,5 @@ a "more on GitHub" line.
 - Academic resource for CS (work in progress): (link)
 - FicalDemo: (link, and a one-line note on what it is)
 
-You have 12 repos total on https://github.com/Khubaib7-del — if any others besides
-the 5 projects above + these 3 are worth surfacing, list them here too.
+You have 15 repos total on https://github.com/Khubaib7-del — if any others besides
+the 8 projects above + these 3 are worth surfacing, list them here too.
