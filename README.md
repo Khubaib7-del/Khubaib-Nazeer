@@ -36,6 +36,11 @@ content/              — draft bio/project copy, not read at runtime
 
 ## Adding a certificate
 
+Named certificate uploads can also be listed in `assets/certificates/extra.json`
+with `file`, `alt`, and an optional `verifyUrl`. These are appended after numbered
+certificates. Preserve the original filename; a verification URL is only added
+when supplied. The cinematic opening supports Skip Intro, Escape, and reduced motion.
+
 No code edits needed. Drop the image into `assets/certificates/` named the
 next number in sequence (`1.jpg`, `2.jpg`, ... — jpg/jpeg/png/webp all work).
 `js/certificates.js` probes for those files at load and builds the cards from
@@ -51,6 +56,12 @@ text, e.g. `2.json`:
 Both fields are optional — without `verifyUrl` the card just has no "Verify
 Certificate" overlay link; without the file at all it falls back to a generic
 "Certificate N" alt text.
+
+## Contact form
+
+The contact form prepares a Gmail compose draft addressed to `khubaibnazeer8@gmail.com`. Name, email, category and project details are required. The subject and body are formatted automatically, with excess spacing normalized and paragraphs preserved. The Email link also includes any entered form details.
+
+Visitors review and send the message in Gmail; opening a draft does not send email. FormSubmit has been removed and no email-service activation or API key is required. The form retains input so the visitor can retry the Email link if their browser blocks the compose tab.
 
 ## Deploying
 

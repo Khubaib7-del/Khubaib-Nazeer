@@ -7,10 +7,11 @@
   // previous scroll position — this site's intro (loader + hero animation)
   // is meant to play from the top every time.
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  if (location.hash) history.replaceState(null, '', location.pathname + location.search);
   window.scrollTo(0, 0);
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Khubaib Nazeer — CS Undergrad @ FAST NUCES</title>
+<title>Khubaib Nazeer — Developer</title>
 <meta name="description" content="Khubaib Nazeer — Computer Science undergraduate at FAST NUCES Lahore. Projects, skills, and curiosity-driven learning.">
 <link rel="canonical" href="https://khubaib-nazeer-protfolio.vercel.app/">
 
@@ -29,43 +30,67 @@
 <meta name="twitter:description" content="CS undergrad at FAST NUCES Lahore. Six self-driven projects across AI, systems, and web.">
 <meta name="twitter:image" content="https://khubaib-nazeer-protfolio.vercel.app/assets/og-image.jpg">
 
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%230c0a09%22/><text x=%2250%22 y=%2262%22 font-family=%22monospace%22 font-size=%2238%22 fill=%22%23ff5a1f%22 text-anchor=%22middle%22>&lt;/&gt;</text></svg>">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><defs><linearGradient id=%22g%22><stop stop-color=%22%23a79bfa%22/><stop offset=%221%22 stop-color=%22%239dd9ef%22/></linearGradient></defs><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%230c0e16%22/><circle cx=%2250%22 cy=%2250%22 r=%2227%22 fill=%22none%22 stroke=%22url(%23g)%22 stroke-width=%226%22/><path d=%22M35 51l10 8V43zm30 0l-10 8V43z%22 fill=%22url(%23g)%22/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v=30">
+<link rel="stylesheet" href="css/cinematic-intro.css?v=30">
+<link rel="stylesheet" href="css/metal-theme.css?v=30">
+<link rel="stylesheet" href="css/project-gallery.css?v=30">
+<link rel="stylesheet" href="css/skills-mosaic.css?v=30">
+<link rel="stylesheet" href="css/learning-gallery.css?v=30">
+<link rel="stylesheet" href="css/final-polish.css?v=30">
+
+<link rel="stylesheet" href="css/content-pass.css?v=30">
+<link rel="stylesheet" href="css/service-focus.css?v=33">
 </head>
 <body>
 
 <noscript><div class="noscript-msg">This experience requires JavaScript enabled.</div></noscript>
 
+<div id="scene-stage" aria-hidden="true"><canvas id="terminal-canvas"></canvas><div id="scene-shade"></div></div>
+
 <!-- Loader -->
-<div id="loader" class="loader">
-  <div class="loader-logo">
-    <span class="loader-icon"><span class="loader-icon-l">&lt;</span><span class="loader-icon-r">/&gt;</span></span>
-    <div class="loader-mark">KHUBAIB_NAZEER</div>
-  </div>
-  <div class="loader-bar"><span id="loader-progress"></span></div>
-  <div class="loader-pct" id="loader-pct">0%</div>
+<div id="loader" class="loader cinematic-intro" aria-label="Portfolio opening">
+  <div class="intro-veil" aria-hidden="true"></div>
+  <div class="intro-aura" aria-hidden="true"></div>
+  <div class="intro-grain" aria-hidden="true"></div>
+  <div class="intro-word" aria-label="Khubaib Nazeer"><div class="intro-name-line"><span>KHUBAIB</span></div><div class="intro-name-line"><span>NAZEER</span></div></div>
+  <button type="button" id="intro-skip" class="intro-skip" hidden>Skip intro</button>
 </div>
 
 <!-- Scroll progress -->
-<div class="scroll-progress"><span id="scroll-progress-fill"></span></div>
+<script>
+  // Keep content reachable even if a remote animation dependency cannot load.
+  function revealWithoutIntro() {
+    document.getElementById('loader').hidden = true;
+    document.documentElement.classList.remove('intro-running');
+    document.documentElement.classList.add('intro-fallback');
+    document.querySelectorAll('[inert]').forEach(el => el.inert = false);
+  }
+  document.getElementById('intro-skip').addEventListener('click', () => {
+    if (!document.documentElement.classList.contains('intro-running')) revealWithoutIntro();
+  });
+  setTimeout(() => {
+    if (!document.getElementById('loader').hidden) revealWithoutIntro();
+  }, 4000);
+</script>
+
 
 <!-- Nav -->
 <header class="nav" id="nav">
-  <a href="#hero" class="nav-logo"><span class="logo-mark">&lt;/&gt;</span><span class="logo-text">KHUBAIB NAZEER</span></a>
+  <a href="#hero" class="nav-logo"><span class="logo-text">KHUBAIB NAZEER</span></a>
   <nav class="nav-links">
-    <a href="#education">Education</a>
     <a href="#skills">Skills</a>
     <a href="#collection">Projects</a>
+    <a href="#certificates">Certificates</a>
     <a href="#contact">Contact</a>
   </nav>
   <a href="#contact" class="btn btn-ghost magnetic">Get in touch <span class="btn-arrow">&rarr;</span></a>
-  <button class="nav-burger" id="nav-burger" aria-label="Toggle menu"><span></span><span></span></button>
+  <button class="nav-burger" id="nav-burger" aria-label="Toggle menu" aria-controls="nav-mobile" aria-expanded="false"><span></span><span></span></button>
 </header>
 <div class="nav-mobile" id="nav-mobile">
-  <a href="#education">Education</a>
   <a href="#skills">Skills</a>
   <a href="#collection">Projects</a>
   <a href="#certificates">Certificates</a>
@@ -76,124 +101,59 @@
 
   <!-- HERO -->
   <section class="hero" id="hero">
-    <canvas id="terminal-canvas"></canvas>
+    <div class="hero-atmosphere" aria-hidden="true"></div>
     <div class="hero-grain"></div>
     <div class="hero-content">
-      <p class="badge reveal-up">{ CS UNDERGRAD · FAST NUCES LAHORE }</p>
       <h1 class="hero-title">
         <span class="line"><span class="reveal-line">BUILT FROM</span></span>
         <span class="line"><span class="reveal-line">CURIOSITY<em>.</em></span></span>
       </h1>
-      <p class="hero-sub reveal-up">I'm Khubaib Nazeer — a computer science undergrad who learns by building,
-        breaking, and debugging things until they make sense. No internships yet, just a lot of self-driven projects.</p>
+      <p class="hero-sub reveal-up">I’m Khubaib Nazeer, a developer building thoughtful websites and software.</p>
       <div class="hero-cta reveal-up">
-        <a href="#collection" class="btn btn-primary magnetic">View Projects</a>
-        <a href="#contact" class="btn btn-outline magnetic">Get in touch</a>
+        <a href="#collection" class="btn btn-primary magnetic">Explore my work <span aria-hidden="true">↗</span></a>
+        <a href="#contact" class="btn btn-outline magnetic">Let's connect <span aria-hidden="true">↗</span></a>
       </div>
-    </div>
-    <div class="scroll-cue">
-      <span class="scroll-cue-mouse"><span></span></span>
-      <span>Scroll to explore</span>
     </div>
   </section>
 
   <!-- PHILOSOPHY -->
-  <section class="philosophy" id="philosophy">
-    <div class="philosophy-inner">
-      <p class="split-text">
-        <span>I didn't start with a roadmap.</span>
-        <span>Every language, every framework — picked up because something broke and I wanted to know why.</span>
-        <span>That's still <em>how I learn best.</em></span>
-      </p>
-    </div>
-    <div class="philosophy-bg" aria-hidden="true"></div>
-  </section>
-
-  <!-- EDUCATION -->
-  <section class="education" id="education">
-    <div class="education-inner">
-      <span class="eyebrow reveal-up">00 — Education</span>
-      <h2>Currently sharpening fundamentals.</h2>
-      <div class="education-grid">
-        <div class="education-card education-card-feature reveal-up">
-          <div class="education-badge" id="education-badge">
-            <div class="education-badge-ring">
-              <span class="education-badge-face education-badge-front">★</span>
-              <span class="education-badge-face education-badge-back">★</span>
-            </div>
-          </div>
-          <div class="education-head">
-            <h3>BS Computer Science</h3>
-            <span class="education-years">2024 — 2028</span>
-          </div>
-          <p class="education-school">FAST National University of Computer &amp; Emerging Sciences (NUCES), Lahore</p>
-          <div class="education-courses">
-            <span class="education-courses-label">Currently in</span>
-            <span class="education-sem-now">Semester 4</span>
-          </div>
-        </div>
-        <div class="course-ring-wrap" id="course-ring-wrap">
-          <div class="course-ring" id="course-ring">
-            <div class="course-card"><strong>PF</strong><small>Programming Fundamentals</small></div>
-            <div class="course-card"><strong>Calculus</strong><small>Analytical Geometry</small></div>
-            <div class="course-card"><strong>OOP</strong><small>Object Oriented Programming</small></div>
-            <div class="course-card"><strong>DLD</strong><small>Digital Logic Design</small></div>
-            <div class="course-card"><strong>MVC</strong><small>Multivariable Calculus</small></div>
-            <div class="course-card"><strong>COAL</strong><small>Computer Org. &amp; Assembly</small></div>
-            <div class="course-card"><strong>DS</strong><small>Data Structures</small></div>
-            <div class="course-card"><strong>LA</strong><small>Linear Algebra</small></div>
-            <div class="course-card"><strong>TOA</strong><small>Theory of Automata</small></div>
-            <div class="course-card"><strong>OS</strong><small>Operating Systems</small></div>
-            <div class="course-card"><strong>DB</strong><small>Database Systems</small></div>
-            <div class="course-card"><strong>AI</strong><small>Artificial Intelligence</small></div>
-            <div class="course-card"><strong>SDA</strong><small>Software Design &amp; Analysis</small></div>
-            <div class="course-card"><strong>Prob</strong><small>Probability &amp; Statistics</small></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SKILLS — sharp-edged puzzle block that assembles on scroll -->
+<!-- EDUCATION -->
+<!-- SKILLS — living 2.5D mosaic -->
   <section class="skills" id="skills">
-    <span class="eyebrow reveal-up">01 — Skills</span>
-    <h2 class="reveal-up">Tools I reach for.</h2>
+    <h2 class="reveal-up">Skills</h2>
     <div class="skills-stage" id="skills-stage">
-      <div class="skills-flank skills-flank-left" id="skills-flank-left">
-        <p>These are the technologies<br>I've dived into —</p>
-      </div>
       <div class="skills-puzzle" id="skills-puzzle">
         <div class="skills-board" id="skills-board">
-          <div class="skill-chip"><span class="skill-chip-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg" alt=""></span><span>C</span></div>
-          <div class="skill-chip"><span class="skill-chip-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg" alt=""></span><span>C++</span></div>
-          <div class="skill-chip"><span class="skill-chip-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt=""></span><span>Python</span></div>
-          <div class="skill-chip"><span class="skill-chip-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt=""></span><span>JavaScript</span></div>
+          <div class="skill-chip"><span class="skill-chip-icon"><img src="assets/skills/c-original.svg" alt=""></span><span>C</span></div>
+          <div class="skill-chip"><span class="skill-chip-icon"><img src="assets/skills/cplusplus-original.svg" alt=""></span><span>C++</span></div>
+          <div class="skill-chip"><span class="skill-chip-icon"><img src="assets/skills/python-original.svg" alt=""></span><span>Python</span></div>
+          <div class="skill-chip"><span class="skill-chip-icon"><img src="assets/skills/javascript-original.svg" alt=""></span><span>JavaScript</span></div>
           <div class="skill-chip"><span class="skill-chip-icon skill-chip-icon-text">SQL</span><span>SQL</span></div>
           <div class="skill-chip"><span class="skill-chip-icon"><img src="assets/asm-logo.png" alt=""></span><span>Assembly</span></div>
-          <div class="skill-chip"><span class="skill-chip-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt=""></span><span>HTML5</span></div>
-          <div class="skill-chip"><span class="skill-chip-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt=""></span><span>CSS3</span></div>
-          <div class="skill-chip"><span class="skill-chip-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg" alt=""></span><span>Tailwind</span></div>
-          <div class="skill-chip"><span class="skill-chip-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg" alt=""></span><span>Bootstrap</span></div>
-          <div class="skill-chip"><span class="skill-chip-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt=""></span><span>Node.js</span></div>
-          <div class="skill-chip"><span class="skill-chip-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt=""></span><span>Git</span></div>
-          <div class="skill-chip"><span class="skill-chip-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt=""></span><span>GitHub</span></div>
-          <div class="skill-chip"><span class="skill-chip-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg" alt=""></span><span>VS Code</span></div>
-          <div class="skill-chip"><span class="skill-chip-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pycharm/pycharm-original.svg" alt=""></span><span>PyCharm</span></div>
-          <div class="skill-chip"><span class="skill-chip-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" alt=""></span><span>PostgreSQL</span></div>
-          <div class="skill-chip"><span class="skill-chip-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg" alt=""></span><span>Express.js</span></div>
-          <div class="skill-chip"><span class="skill-chip-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" alt=""></span><span>MongoDB</span></div>
-          <div class="skill-chip"><span class="skill-chip-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongoose/mongoose-original.svg" alt=""></span><span>Mongoose</span></div>
+          <div class="skill-chip"><span class="skill-chip-icon"><img src="assets/skills/html5-original.svg" alt=""></span><span>HTML5</span></div>
+          <div class="skill-chip"><span class="skill-chip-icon"><img src="assets/skills/css3-original.svg" alt=""></span><span>CSS3</span></div>
+          <div class="skill-chip"><span class="skill-chip-icon"><img src="assets/skills/tailwindcss-original.svg" alt=""></span><span>Tailwind</span></div>
+          <div class="skill-chip"><span class="skill-chip-icon"><img src="assets/skills/bootstrap-original.svg" alt=""></span><span>Bootstrap</span></div>
+          <div class="skill-chip"><span class="skill-chip-icon"><img src="assets/skills/nodejs-original.svg" alt=""></span><span>Node.js</span></div>
+          <div class="skill-chip"><span class="skill-chip-icon"><img src="assets/skills/git-original.svg" alt=""></span><span>Git</span></div>
+          <div class="skill-chip"><span class="skill-chip-icon"><img src="assets/skills/github-original.svg" alt=""></span><span>GitHub</span></div>
+          <div class="skill-chip"><span class="skill-chip-icon"><img src="assets/skills/vscode-original.svg" alt=""></span><span>VS Code</span></div>
+          <div class="skill-chip"><span class="skill-chip-icon"><img src="assets/skills/pycharm-original.svg" alt=""></span><span>PyCharm</span></div>
+          <div class="skill-chip"><span class="skill-chip-icon"><img src="assets/skills/postgresql-original.svg" alt=""></span><span>PostgreSQL</span></div>
+          <div class="skill-chip"><span class="skill-chip-icon"><img src="assets/skills/express-original.svg" alt=""></span><span>Express.js</span></div>
+          <div class="skill-chip"><span class="skill-chip-icon"><img src="assets/skills/mongodb-original.svg" alt=""></span><span>MongoDB</span></div>
+          <div class="skill-chip"><span class="skill-chip-icon"><img src="assets/skills/mongoose-original.svg" alt=""></span><span>Mongoose</span></div>
           <div class="skill-chip"><span class="skill-chip-icon"><img src="assets/mongodb-atlas-logo.png" alt=""></span><span>MongoDB Atlas</span></div>
-          <div class="skill-chip"><span class="skill-chip-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postman/postman-original.svg" alt=""></span><span>Postman</span></div>
+          <div class="skill-chip"><span class="skill-chip-icon"><img src="assets/skills/postman-original.svg" alt=""></span><span>Postman</span></div>
           <!-- Uncomment as you learn these:
-          <div class="skill-chip"><span class="skill-chip-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt=""></span><span>React</span></div>
-          <div class="skill-chip"><span class="skill-chip-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" alt=""></span><span>Next.js</span></div>
-          <div class="skill-chip"><span class="skill-chip-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" alt=""></span><span>TypeScript</span></div>
-          <div class="skill-chip"><span class="skill-chip-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" alt=""></span><span>Docker</span></div>
-          <div class="skill-chip"><span class="skill-chip-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt=""></span><span>MySQL</span></div>
-          <div class="skill-chip"><span class="skill-chip-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/prisma/prisma-original.svg" alt=""></span><span>Prisma</span></div>
-          <div class="skill-chip"><span class="skill-chip-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastify/fastify-original.svg" alt=""></span><span>Fastify</span></div>
-          <div class="skill-chip"><span class="skill-chip-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg" alt=""></span><span>Redis</span></div>
+          <div class="skill-chip"><span class="skill-chip-icon"><img src="assets/skills/react-original.svg" alt=""></span><span>React</span></div>
+          <div class="skill-chip"><span class="skill-chip-icon"><img src="assets/skills/nextjs-original.svg" alt=""></span><span>Next.js</span></div>
+          <div class="skill-chip"><span class="skill-chip-icon"><img src="assets/skills/typescript-original.svg" alt=""></span><span>TypeScript</span></div>
+          <div class="skill-chip"><span class="skill-chip-icon"><img src="assets/skills/docker-original.svg" alt=""></span><span>Docker</span></div>
+          <div class="skill-chip"><span class="skill-chip-icon"><img src="assets/skills/mysql-original.svg" alt=""></span><span>MySQL</span></div>
+          <div class="skill-chip"><span class="skill-chip-icon"><img src="assets/skills/prisma-original.svg" alt=""></span><span>Prisma</span></div>
+          <div class="skill-chip"><span class="skill-chip-icon"><img src="assets/skills/fastify-original.svg" alt=""></span><span>Fastify</span></div>
+          <div class="skill-chip"><span class="skill-chip-icon"><img src="assets/skills/redis-original.svg" alt=""></span><span>Redis</span></div>
           <div class="skill-chip"><span class="skill-chip-icon skill-chip-icon-text">ORM</span><span>Drizzle</span></div>
           <div class="skill-chip"><span class="skill-chip-icon skill-chip-icon-text">NeonDB</span><span>Neon</span></div>
           <div class="skill-chip"><span class="skill-chip-icon skill-chip-icon-text">☁️</span><span>Coolify</span></div>
@@ -201,26 +161,29 @@
         </div>
       </div>
       <div class="skills-flank skills-flank-right" id="skills-flank-right">
-        <p>Languages, frameworks,<br>and the tools in between.</p>
+        <span class="skill-detail-index" id="skill-detail-index">SELECT A TILE</span>
+        <div class="skill-detail-icon" id="skill-detail-icon">↗</div>
+        <p class="skill-detail-category" id="skill-detail-category">A living toolkit</p>
+        <h3 id="skill-detail-name">My toolkit</h3>
+        <p class="skill-detail-copy" id="skill-detail-copy">Select a skill to see how I use it.</p>
+        <div class="skill-signal" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
       </div>
     </div>
   </section>
 
   <!-- PROJECTS — horizontal scroll -->
-  <section class="h-section" id="collection">
-    <div class="h-section-head">
-      <span class="eyebrow reveal-up">02 — Projects</span>
-      <h2>Eight shipped. <br>More on GitHub.</h2>
-    </div>
+  <section class="h-section" id="collection" aria-label="Project gallery">
     <div class="h-pin">
-      <div class="h-track" id="collection-track">
+    <div class="h-section-head">
+      <h2>Projects</h2>
+    </div>
+      <div class="h-track" id="collection-track" data-lenis-prevent>
 
-        <article class="project-card">
-          <p class="project-prompt">$ open gitatlas</p>
-          <div class="project-num">01</div>
-          <h3>GitAtlas</h3>
-          <p class="project-tag">React · Three.js · TypeScript</p>
-          <p class="project-desc">Transforms GitHub repos into interactive 3D worlds — city mode, force-directed graphs, and a Git timeline constellation, all running client-side.</p>
+        <article class="project-card" aria-label="GitAtlas">
+          <div class="project-visual"><img class="project-poster project-poster-clean" src="assets/posters/Git Atlas ss.png" alt="GitAtlas project interface" loading="lazy"><span class="project-num">01 / 09</span></div>
+          <div class="project-face"><p class="project-tag">React · Three.js · TypeScript</p><h3>GitAtlas</h3></div>
+          <button class="project-toggle" aria-expanded="false" aria-controls="project-details-01" aria-label="Details for GitAtlas"><span>Explore</span> ↗</button>
+          <div class="project-details" id="project-details-01" inert><h4>GitAtlas</h4><p class="project-desc">Transforms GitHub repos into interactive 3D worlds — city mode, force-directed graphs, and a Git timeline constellation, all running client-side.</p>
           <ul class="project-meta">
             <li><span>Stack</span><span>React, Three.js, TypeScript</span></li>
             <li><span>Status</span><span>Deployed on Vercel</span></li>
@@ -229,15 +192,14 @@
             <button class="btn btn-outline magnetic btn-watch project-watch" data-src="assets/videos/gitatlas-web.mp4" data-title="GitAtlas">Watch Demo ▶</button>
             <a href="https://git-atlas-nu.vercel.app" target="_blank" rel="noopener" class="project-link">Live ↗</a>
             <a href="https://github.com/Khubaib7-del/GitAtlas" target="_blank" rel="noopener" class="project-link">GitHub ↗</a>
-          </div>
+          </div></div>
         </article>
 
-        <article class="project-card">
-          <p class="project-prompt">$ open thruline</p>
-          <div class="project-num">02</div>
-          <h3>Thruline</h3>
-          <p class="project-tag">Rust · TypeScript · VS Code Extension</p>
-          <p class="project-desc">A companion layer for AI coding agents — persistent decision logs, a review queue, context-health monitoring, and cross-agent memory via MCP.</p>
+        <article class="project-card" aria-label="Thruline">
+          <div class="project-visual"><img class="project-poster project-poster-logo" src="assets/posters/Thruline logo ss.png" alt="Thruline logo" loading="lazy"><span class="project-num">02 / 09</span></div>
+          <div class="project-face"><p class="project-tag">Rust · TypeScript · VS Code Extension</p><h3>Thruline</h3></div>
+          <button class="project-toggle" aria-expanded="false" aria-controls="project-details-02" aria-label="Details for Thruline"><span>Explore</span> ↗</button>
+          <div class="project-details" id="project-details-02" inert><h4>Thruline</h4><p class="project-desc">A companion layer for AI coding agents — persistent decision logs, a review queue, context-health monitoring, and cross-agent memory via MCP.</p>
           <ul class="project-meta">
             <li><span>Stack</span><span>Rust, TypeScript, MCP</span></li>
             <li><span>Status</span><span>Docs on Vercel</span></li>
@@ -246,15 +208,14 @@
             <button class="btn btn-outline magnetic btn-watch project-watch" data-src="assets/videos/thruline-web.mp4" data-title="Thruline">Watch Demo ▶</button>
             <a href="https://thruline-steel.vercel.app" target="_blank" rel="noopener" class="project-link">Live ↗</a>
             <a href="https://github.com/Khubaib7-del/thruline" target="_blank" rel="noopener" class="project-link">GitHub ↗</a>
-          </div>
+          </div></div>
         </article>
 
-        <article class="project-card">
-          <p class="project-prompt">$ open bite-balance</p>
-          <div class="project-num">03</div>
-          <h3>Bite Balance</h3>
-          <p class="project-tag">Full-stack · React + Node + PostgreSQL</p>
-          <p class="project-desc">A full-stack meal planning and nutrition tracking app — JWT auth, a PostgreSQL-backed API, and a React dashboard.</p>
+        <article class="project-card" aria-label="Bite Balance">
+          <div class="project-visual"><img class="project-poster project-poster-clean" src="assets/posters/bite-balance-clean.webp" alt="Bite Balance project interface" loading="lazy"><span class="project-num">03 / 09</span></div>
+          <div class="project-face"><p class="project-tag">Full-stack · React + Node + PostgreSQL</p><h3>Bite Balance</h3></div>
+          <button class="project-toggle" aria-expanded="false" aria-controls="project-details-03" aria-label="Details for Bite Balance"><span>Explore</span> ↗</button>
+          <div class="project-details" id="project-details-03" inert><h4>Bite Balance</h4><p class="project-desc">A full-stack meal planning and nutrition tracking app — JWT auth, a PostgreSQL-backed API, and a React dashboard.</p>
           <ul class="project-meta">
             <li><span>Stack</span><span>React, Node, PostgreSQL</span></li>
             <li><span>Status</span><span>Source on GitHub</span></li>
@@ -262,15 +223,14 @@
           <div class="project-card-links">
             <button class="btn btn-outline magnetic btn-watch project-watch" data-src="assets/videos/bite-balance-web.mp4" data-title="Bite Balance">Watch Demo ▶</button>
             <a href="https://github.com/Khubaib7-del/Bite-Balance" target="_blank" rel="noopener" class="project-link">GitHub ↗</a>
-          </div>
+          </div></div>
         </article>
 
-        <article class="project-card">
-          <p class="project-prompt">$ open algoviz</p>
-          <div class="project-num">04</div>
-          <h3>AlgoViz</h3>
-          <p class="project-tag">Vanilla HTML · CSS · JS</p>
-          <p class="project-desc">Visualizes search algorithms (DFS, BFS, A*, UCS, IDS) and AI game theory (Minimax, Alpha-Beta pruning) on an interactive grid.</p>
+        <article class="project-card" aria-label="AlgoViz">
+          <div class="project-visual"><img class="project-poster project-poster-clean" src="assets/posters/algo-visualizer-clean.webp" alt="AlgoViz project interface" loading="lazy"><span class="project-num">04 / 09</span></div>
+          <div class="project-face"><p class="project-tag">Vanilla HTML · CSS · JS</p><h3>AlgoViz</h3></div>
+          <button class="project-toggle" aria-expanded="false" aria-controls="project-details-04" aria-label="Details for AlgoViz"><span>Explore</span> ↗</button>
+          <div class="project-details" id="project-details-04" inert><h4>AlgoViz</h4><p class="project-desc">Visualizes search algorithms (DFS, BFS, A*, UCS, IDS) and AI game theory (Minimax, Alpha-Beta pruning) on an interactive grid.</p>
           <ul class="project-meta">
             <li><span>Stack</span><span>HTML, CSS, JS</span></li>
             <li><span>Status</span><span>Live on GitHub Pages</span></li>
@@ -279,15 +239,14 @@
             <button class="btn btn-outline magnetic btn-watch project-watch" data-src="assets/videos/algo-visualizer-web.mp4" data-title="AlgoViz">Watch Demo ▶</button>
             <a href="https://khubaib7-del.github.io/ALGORITHM-VISUALIZER/" target="_blank" rel="noopener" class="project-link">Live ↗</a>
             <a href="https://github.com/Khubaib7-del/ALGORITHM-VISUALIZER" target="_blank" rel="noopener" class="project-link">GitHub ↗</a>
-          </div>
+          </div></div>
         </article>
 
-        <article class="project-card">
-          <p class="project-prompt">$ open cognivision</p>
-          <div class="project-num">05</div>
-          <h3>CogniVision</h3>
-          <p class="project-tag">Python · Computer Vision · AI</p>
-          <p class="project-desc">Live student attention &amp; cheating-behavior detection — EfficientNet-B2 + custom YOLOv8 dual-detector pipeline with a FastAPI dashboard. 90.1% validation accuracy.</p>
+        <article class="project-card" aria-label="CogniVision">
+          <div class="project-visual"><img class="project-poster project-poster-clean" src="assets/posters/Cognivision-ss.png" alt="CogniVision project identity" loading="lazy"><span class="project-num">05 / 09</span></div>
+          <div class="project-face"><p class="project-tag">Python · Computer Vision · AI</p><h3>CogniVision</h3></div>
+          <button class="project-toggle" aria-expanded="false" aria-controls="project-details-05" aria-label="Details for CogniVision"><span>Explore</span> ↗</button>
+          <div class="project-details" id="project-details-05" inert><h4>CogniVision</h4><p class="project-desc">Live student attention &amp; cheating-behavior detection — EfficientNet-B2 + custom YOLOv8 dual-detector pipeline with a FastAPI dashboard. 90.1% validation accuracy.</p>
           <ul class="project-meta">
             <li><span>Stack</span><span>Python, PyTorch, YOLOv8</span></li>
             <li><span>Status</span><span>Source on GitHub</span></li>
@@ -295,15 +254,14 @@
           <div class="project-card-links">
             <button class="btn btn-outline magnetic btn-watch project-watch" data-src="assets/videos/cognivision-web.mp4" data-title="CogniVision">Watch Demo ▶</button>
             <a href="https://github.com/Khubaib7-del/Cognivision" target="_blank" rel="noopener" class="project-link">GitHub ↗</a>
-          </div>
+          </div></div>
         </article>
 
-        <article class="project-card">
-          <p class="project-prompt">$ open echo-drift</p>
-          <div class="project-num">06</div>
-          <h3>Echo Drift</h3>
-          <p class="project-tag">React · TypeScript · PixiJS (WebGL)</p>
-          <p class="project-desc">A WebGL puzzle platformer — your past movements record as an "echo" that becomes a hazard you must outmaneuver to fix the timeline.</p>
+        <article class="project-card" aria-label="Echo Drift">
+          <div class="project-visual"><img class="project-poster project-poster-clean" src="assets/posters/echo-drift-clean.webp" alt="Echo Drift project interface" loading="lazy"><span class="project-num">06 / 09</span></div>
+          <div class="project-face"><p class="project-tag">React · TypeScript · PixiJS (WebGL)</p><h3>Echo Drift</h3></div>
+          <button class="project-toggle" aria-expanded="false" aria-controls="project-details-06" aria-label="Details for Echo Drift"><span>Explore</span> ↗</button>
+          <div class="project-details" id="project-details-06" inert><h4>Echo Drift</h4><p class="project-desc">A WebGL puzzle platformer — your past movements record as an "echo" that becomes a hazard you must outmaneuver to fix the timeline.</p>
           <ul class="project-meta">
             <li><span>Stack</span><span>React, TypeScript, PixiJS</span></li>
             <li><span>Status</span><span>Deployed on Vercel</span></li>
@@ -312,15 +270,14 @@
             <button class="btn btn-outline magnetic btn-watch project-watch" data-src="assets/videos/echo-drift-web.mp4" data-title="Echo Drift">Watch Demo ▶</button>
             <a href="https://echo-drift.vercel.app" target="_blank" rel="noopener" class="project-link">Live ↗</a>
             <a href="https://github.com/Khubaib7-del/Echo-Drift" target="_blank" rel="noopener" class="project-link">GitHub ↗</a>
-          </div>
+          </div></div>
         </article>
 
-        <article class="project-card">
-          <p class="project-prompt">$ open pop-rush</p>
-          <div class="project-num">07</div>
-          <h3>POP Rush</h3>
-          <p class="project-tag">x86 Assembly</p>
-          <p class="project-desc">A balloon-popping arcade game written entirely in x86 Assembly — 3 modes, a 3-level Time Attack mode with ramping speed, and full screen-state flow.</p>
+        <article class="project-card" aria-label="POP Rush">
+          <div class="project-visual"><img class="project-poster" src="assets/posters/pop-rush.jpg" alt="POP Rush — screenshot from the project demo" loading="lazy" width="960" height="540"><span class="project-num">07 / 09</span></div>
+          <div class="project-face"><p class="project-tag">x86 Assembly</p><h3>POP Rush</h3></div>
+          <button class="project-toggle" aria-expanded="false" aria-controls="project-details-07" aria-label="Details for POP Rush"><span>Explore</span> ↗</button>
+          <div class="project-details" id="project-details-07" inert><h4>POP Rush</h4><p class="project-desc">A balloon-popping arcade game written entirely in x86 Assembly — 3 modes, a 3-level Time Attack mode with ramping speed, and full screen-state flow.</p>
           <ul class="project-meta">
             <li><span>Stack</span><span>x86 Assembly</span></li>
             <li><span>Status</span><span>Source on GitHub</span></li>
@@ -328,15 +285,14 @@
           <div class="project-card-links">
             <button class="btn btn-outline magnetic btn-watch project-watch" data-src="assets/videos/pop-rush-web.mp4" data-title="POP Rush">Watch Demo ▶</button>
             <a href="https://github.com/Khubaib7-del/POP-RUSH" target="_blank" rel="noopener" class="project-link">GitHub ↗</a>
-          </div>
+          </div></div>
         </article>
 
-        <article class="project-card">
-          <p class="project-prompt">$ open os-scheduler</p>
-          <div class="project-num">08</div>
-          <h3>OS Scheduler Visualizer</h3>
-          <p class="project-tag">Vanilla HTML · CSS · JS</p>
-          <p class="project-desc">Animated visualizer for CPU scheduling algorithms (FCFS, SJF, SRTF, Round Robin) with live Gantt charts and per-process statistics.</p>
+        <article class="project-card" aria-label="OS Scheduler Visualizer">
+          <div class="project-visual"><img class="project-poster project-poster-clean" src="assets/posters/os-scheduler-visualizer-clean.webp" alt="OS Scheduler Visualizer project interface" loading="lazy"><span class="project-num">08 / 09</span></div>
+          <div class="project-face"><p class="project-tag">Vanilla HTML · CSS · JS</p><h3>OS Scheduler Visualizer</h3></div>
+          <button class="project-toggle" aria-expanded="false" aria-controls="project-details-08" aria-label="Details for OS Scheduler Visualizer"><span>Explore</span> ↗</button>
+          <div class="project-details" id="project-details-08" inert><h4>OS Scheduler Visualizer</h4><p class="project-desc">Animated visualizer for CPU scheduling algorithms (FCFS, SJF, SRTF, Round Robin) with live Gantt charts and per-process statistics.</p>
           <ul class="project-meta">
             <li><span>Stack</span><span>HTML, CSS, JS, SVG</span></li>
             <li><span>Status</span><span>Live on GitHub Pages</span></li>
@@ -345,125 +301,97 @@
             <button class="btn btn-outline magnetic btn-watch project-watch" data-src="assets/videos/os-scheduler-visualizer-web.mp4" data-title="OS Scheduler Visualizer">Watch Demo ▶</button>
             <a href="https://khubaib7-del.github.io/OS-Scheduler-Visualizer/" target="_blank" rel="noopener" class="project-link">Live ↗</a>
             <a href="https://github.com/Khubaib7-del/OS-Scheduler-Visualizer" target="_blank" rel="noopener" class="project-link">GitHub ↗</a>
-          </div>
+          </div></div>
+        </article>
+
+        <article class="project-card" aria-label="Goblin Grit">
+          <div class="project-visual"><img class="project-poster project-poster-clean" src="assets/posters/Goblin Grit-ss (1).png" alt="Goblin Grit title screen" loading="lazy"><span class="project-num">09 / 09</span></div>
+          <div class="project-face"><p class="project-tag">Game Development · Retro Pixel Platformer</p><h3>Goblin Grit</h3></div>
+          <button class="project-toggle" aria-expanded="false" aria-controls="project-details-09" aria-label="Details for Goblin Grit"><span>Explore</span> ↗</button>
+          <div class="project-details" id="project-details-09" inert><h4>Goblin Grit</h4><p class="project-desc">A pixel-art adventure with platforming, jumping, and slash combat. Play the browser build or watch the gameplay demo.</p>
+          <ul class="project-meta">
+            <li><span>Type</span><span>Browser game</span></li>
+            <li><span>Status</span><span>Deployed on Vercel</span></li>
+          </ul>
+          <div class="project-card-links">
+            <button class="btn btn-outline magnetic btn-watch project-watch" data-src="assets/videos/goblin-grit-web.mp4" data-title="Goblin Grit">Watch Demo ▶</button>
+            <a href="https://goblin-grit.vercel.app" target="_blank" rel="noopener" class="project-link">Play ↗</a>
+            <a href="https://github.com/Khubaib7-del/Goblin-Grit" target="_blank" rel="noopener" class="project-link">GitHub ↗</a>
+          </div></div>
         </article>
 
         <article class="project-card project-card-link">
           <p class="project-prompt">$ open github</p>
-          <div class="project-num">09</div>
+          <div class="project-num">10</div>
           <h3>More on GitHub</h3>
-          <p class="project-tag">15 repos and counting</p>
+          <p class="project-tag">20+ public repositories</p>
           <p class="project-desc">Profile README, an academic CS resource (in progress), and more.</p>
           <a href="https://github.com/Khubaib7-del" target="_blank" rel="noopener" class="btn btn-outline magnetic">View Profile</a>
         </article>
 
       </div>
-      <div class="h-progress"><span id="collection-progress"></span></div>
+      <div class="gallery-controls"><span class="gallery-hint">Scroll to explore · Open a card to discover</span><div class="gallery-navigation"><button type="button" class="gallery-prev" aria-label="Previous projects">←</button><span class="gallery-count" aria-live="polite">01 / 10</span><button type="button" class="gallery-next" aria-label="Next projects">→</button></div></div><div class="h-progress"><span id="collection-progress"></span></div>
     </div>
   </section>
 
   <!-- STATS -->
-  <section class="stats" id="stats">
-    <div class="stat">
-      <h3 class="stat-num" data-target="2024" data-plain>0</h3>
-      <div class="stat-gauge"><span></span></div>
-      <p>Started My CS Journey</p>
-    </div>
-    <div class="stat">
-      <h3 class="stat-num" data-target="6">0</h3>
-      <div class="stat-gauge"><span></span></div>
-      <p>Languages I Write Code In</p>
-    </div>
-    <div class="stat">
-      <h3 class="stat-num" data-target="15">0</h3>
-      <div class="stat-gauge"><span></span></div>
-      <p>Public Repos on GitHub</p>
-    </div>
-    <div class="stat">
-      <h3 class="stat-num" data-target="8" data-suffix="+">0</h3>
-      <div class="stat-gauge"><span></span></div>
-      <p>Self-driven Projects Built</p>
-    </div>
-  </section>
-
-  <!-- CERTIFICATES -->
+<!-- CERTIFICATES -->
+<!-- CURRENTLY EXPLORING -->
   <section class="certificates" id="certificates">
-    <div class="certificates-head">
-      <span class="eyebrow">03 — Certificates</span>
-      <h2>Proof I went and learned it.</h2>
+    <div class="certificates-head"><h2>Certificates</h2></div>
+    <div class="cert-gallery" id="cert-gallery" tabindex="0" aria-label="Certificate carousel">
+      <div class="cert-viewport"><div class="cert-stack" id="cert-stack"></div></div>
+      <aside class="cert-inspector">
+        <span class="cert-inspector-index" id="cert-inspector-index">CERTIFICATE / 01</span>
+        <p class="cert-inspector-issuer" id="cert-inspector-issuer">Credential</p>
+        <h3 id="cert-inspector-title">Loading certificates…</h3>
+        <p class="cert-inspector-date" id="cert-inspector-date"></p>
+        <div class="cert-stack-nav" id="cert-stack-nav">
+          <button type="button" id="cert-prev" aria-label="Previous certificate">←</button>
+          <span class="cert-stack-count" id="cert-stack-count">01 / 01</span>
+          <button type="button" id="cert-next" aria-label="Next certificate">→</button>
+        </div>
+      </aside>
     </div>
-    <!-- Populated at load by js/certificates.js — drop a numbered image
-         (1.jpg, 2.jpg, ...) into assets/certificates/ to add a card, no
-         markup edits needed. See that file for the naming convention. -->
-    <div class="cert-stack" id="cert-stack"></div>
-    <div class="cert-stack-nav" id="cert-stack-nav" aria-hidden="true">
-      <span class="cert-stack-count" id="cert-stack-count">1 / 1</span>
-      <span class="cert-stack-hint">scroll to browse</span>
-    </div>
+    <div class="cert-filmstrip" id="cert-filmstrip" aria-label="Choose a certificate"></div>
   </section>
 
-  <!-- CURRENTLY EXPLORING -->
-  <section class="stories" id="stories">
-    <span class="eyebrow reveal-up">04 — Currently Exploring</span>
-    <h2>What's pulling my curiosity right now.</h2>
-    <div class="interest-grid">
-      <article class="interest-card">
-        <h3>AI &amp; Computer Vision</h3>
-        <p>Started with an object detection project in Python — now digging into how models actually "see."</p>
-      </article>
-      <article class="interest-card">
-        <h3>Systems &amp; Low-Level Programming</h3>
-        <p>C, C++, and x86 Assembly — getting closer to the metal to understand what's really happening underneath.</p>
-      </article>
-      <article class="interest-card">
-        <h3>Web Development</h3>
-        <p>This site included — HTML/CSS/JS, Tailwind, and figuring out how scroll-driven animation libraries work.</p>
-      </article>
-      <article class="interest-card">
-        <h3>Game Development</h3>
-        <p>A game project is in the works — code's written, polish and a playable build are still on the way.</p>
-      </article>
-    </div>
-  </section>
-
-  <!-- LEGACY — pixel art finale -->
-  <section class="legacy" id="legacy">
-    <div class="legacy-text">
-      <span class="eyebrow reveal-up">05 — Beyond the Code</span>
-      <h2>Still early in the climb<br>but I like where it's headed.</h2>
-    </div>
-    <div class="pixel-stage">
-      <canvas id="pixel-canvas"></canvas>
-    </div>
-    <div class="pixel-accents" id="pixel-accents" aria-hidden="true"></div>
-    <p class="legacy-caption reveal-up">Every project behind me was a step further up the path.</p>
-  </section>
-
-  <!-- CONTACT / FOOTER -->
+<!-- CONTACT / FOOTER -->
   <footer class="footer" id="contact">
     <div class="footer-top">
-      <h2>Let's <em>connect.</em></h2>
-      <div class="footer-contacts">
-        <a href="mailto:khubaibnazeer8@gmail.com" class="btn btn-primary magnetic">Email Me</a>
-        <a href="https://github.com/Khubaib7-del" target="_blank" rel="noopener" class="btn btn-outline magnetic">GitHub</a>
-        <a href="https://www.linkedin.com/in/khubaib-nazeer-039b47384/" target="_blank" rel="noopener" class="btn btn-outline magnetic">LinkedIn</a>
+      <div class="contact-lead">
+        <h2>Let's <em>build.</em></h2>
+        <div class="footer-contacts">
+          <a id="contact-gmail" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=khubaibnazeer8%40gmail.com&amp;su=Project%20enquiry&amp;body=Hi%20Khubaib%2C%0A%0AI%27d%20like%20to%20discuss%20a%20project%20with%20you.%0A%0AProject%20details%3A%0A%0AName%3A" target="_blank" rel="noopener noreferrer" class="btn btn-outline magnetic" aria-label="Email Khubaib in Gmail (opens a new tab)">Email ↗</a>
+          <a href="https://github.com/Khubaib7-del" target="_blank" rel="noopener" class="btn btn-outline magnetic">GitHub</a>
+          <a href="https://www.linkedin.com/in/khubaib-nazeer-039b47384/" target="_blank" rel="noopener" class="btn btn-outline magnetic">LinkedIn</a>
+        </div>
       </div>
+      <form class="contact-form" id="contact-form">
+        <label><span>Name</span><input name="name" autocomplete="name" required maxlength="100" placeholder="Your name"></label>
+        <label><span>Email</span><input name="email" type="email" autocomplete="email" required maxlength="254" placeholder="you@example.com"></label>
+        <label class="contact-form-project"><span>Project category</span><select name="category" required><option value="" disabled selected>Select a category</option><option>Website</option><option>Web App</option><option>Android App</option><option>iOS App</option><option>AI / Automation</option><option>Other / Not sure yet</option></select></label>
+        <label class="contact-form-project"><span>Project details</span><textarea name="project" required maxlength="3000" spellcheck="true" rows="4" placeholder="What would you like to build?&#10;Key features or goals:&#10;Preferred timeline and budget (optional):"></textarea></label>
+        <button class="btn btn-primary magnetic" type="submit">Prepare enquiry in Gmail ↗</button>
+        <p class="contact-form-status" id="contact-form-status" role="status" aria-live="polite" aria-atomic="true"></p>
+        <p class="contact-form-note">Opens a formatted Gmail draft. Review it, then press Send in Gmail.</p>
+      </form>
     </div>
     <div class="footer-bottom">
-      <span>Khubaib Nazeer — CS Undergrad</span>
+      <span>Khubaib Nazeer — Developer</span>
       <div class="footer-links">
         <a href="#hero">Top</a>
         <a href="#skills">Skills</a>
         <a href="#collection">Projects</a>
       </div>
-      <span>© 2026 Khubaib Nazeer. Resume coming soon.</span>
+      <span>© 2026 Khubaib Nazeer.</span>
     </div>
   </footer>
 
 </main>
 
 <!-- Video lightbox -->
-<div class="video-modal" id="video-modal">
+<div class="video-modal" id="video-modal" role="dialog" aria-modal="true" aria-labelledby="video-modal-title" aria-hidden="true">
   <div class="video-modal-inner">
     <div class="video-modal-head">
       <span id="video-modal-title"></span>
@@ -475,18 +403,19 @@
 </div>
 
 <!-- Certificate lightbox -->
-<div class="cert-modal" id="cert-modal">
+<div class="cert-modal" id="cert-modal" role="dialog" aria-modal="true" aria-label="Certificate preview" aria-hidden="true">
   <button class="cert-modal-close" id="cert-modal-close" aria-label="Close certificate">&times;</button>
   <img id="cert-modal-img" src="" alt="">
 </div>
 
 <!-- Custom cursor (desktop / fine-pointer only, see main.js) -->
-<div class="cursor-dot" id="cursor-dot"></div>
-<div class="cursor-ring" id="cursor-ring"></div>
 
-<script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
-<script src="https://unpkg.com/gsap@3/dist/ScrollTrigger.min.js"></script>
-<script src="https://unpkg.com/lenis@1/dist/lenis.min.js"></script>
-<script type="module" src="js/main.js"></script>
+
+
+<script src="js/vendor/gsap-3.13.0.min.js"></script>
+<script src="js/vendor/ScrollTrigger-3.13.0.min.js"></script>
+<script src="js/vendor/lenis-1.3.8.min.js"></script>
+<script type="module" src="js/main.js?v=33"></script>
+<script type="module" src="js/contact-form.js?v=4"></script>
 </body>
 </html>

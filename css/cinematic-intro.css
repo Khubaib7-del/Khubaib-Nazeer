@@ -1,0 +1,20 @@
+/* Cinematic opening: typography, a light field, then a clean aperture wipe. */
+html.intro-running, .intro-running body { overflow: hidden; }
+.loader[hidden] { display: none !important; }
+.intro-fallback .reveal-up, .intro-fallback .reveal-line { opacity: 1 !important; transform: none !important; }
+.cert-card-frame img { object-fit: contain; }
+.project-poster { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 8px; margin-bottom: 1rem; }
+.loader.cinematic-intro { isolation: isolate; overflow: hidden; background: #0b0b10; gap: 0; padding: 7vw; }
+.intro-aura { position: absolute; z-index: -2; width: min(1000px, 110vw); height: min(650px, 85vh); border-radius: 50%; opacity: 0; filter: blur(55px); background: radial-gradient(ellipse at 25% 65%, #ff713d 0%, transparent 48%), radial-gradient(ellipse at 75% 30%, #69c7e8 0%, transparent 42%), radial-gradient(ellipse at 60% 65%, #8464f5 0%, transparent 52%), radial-gradient(ellipse at 45% 40%, #f278aa 0%, transparent 48%); }
+.intro-grain { position: absolute; inset: 0; z-index: -1; opacity: 0.08; pointer-events: none; background: radial-gradient(#fff 0.6px, transparent 0.8px) 0 0 / 3px 3px; }
+.intro-eyebrow { font: 0.68rem var(--font-mono); letter-spacing: 0.28em; text-transform: uppercase; color: #e4d9d1; margin-bottom: 2rem; }
+.intro-word { display: flex; overflow: hidden; font: 600 clamp(2.4rem, 11.6vw, 10rem)/1.14 var(--font-display); letter-spacing: -0.065em; color: #f4f0e8; padding: 0 0.08em; }
+.intro-word span { display: inline-block; }
+.intro-byline { font: 0.75rem var(--font-mono); letter-spacing: 0.2em; text-transform: uppercase; color: #e4d9d1; margin-top: 1.5rem; }
+.intro-rule { width: min(560px, 72vw); height: 1px; margin-top: 2rem; background: linear-gradient(90deg, transparent, #ffb08a, #eee1ee, #88d5ef, transparent); transform-origin: center; }
+.intro-bottom { position: absolute; inset: auto 5vw 2rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; font: 0.65rem var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: #c4bac5; }
+.intro-skip { background: #0b0b104d; color: #f4f0e8; border: 1px solid #ffffff40; padding: 0.85rem 1rem; border-radius: 100px; font: inherit; letter-spacing: inherit; cursor: pointer; min-height: 44px; }
+.intro-skip:hover { background: #ffffff15; border-color: #f4f0e8; }
+.intro-skip:focus-visible { outline: 2px solid #88d5ef; outline-offset: 5px; }
+@media (max-width: 600px) { .intro-eyebrow { font-size: 0.57rem; letter-spacing: 0.16em; } .intro-byline { font-size: 0.65rem; } .intro-bottom { font-size: 0.55rem; bottom: max(1rem, env(safe-area-inset-bottom)); } .intro-aura { filter: blur(35px); } }
+@media (prefers-reduced-motion: reduce) { .intro-aura { display: none; } }

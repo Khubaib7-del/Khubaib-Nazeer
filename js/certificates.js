@@ -44,6 +44,10 @@ async function loadCertMeta(n) {
 function buildCard(src, meta, n) {
   const article = document.createElement('article');
   article.className = 'cert-card';
+  const fallbackTitle = (meta.alt || `Certificate ${n}`).split('—')[0].trim();
+  article.dataset.title = meta.title || fallbackTitle;
+  article.dataset.issuer = meta.issuer || 'Learning credential';
+  article.dataset.date = meta.date || '';
 
   const inner = document.createElement('div');
   inner.className = 'cert-card-inner';
@@ -53,6 +57,9 @@ function buildCard(src, meta, n) {
 
   const frame = document.createElement('div');
   frame.className = 'cert-card-frame';
+  frame.tabIndex = 0;
+  frame.setAttribute('role', 'button');
+  frame.setAttribute('aria-label', `Open ${article.dataset.title}`);
 
   const img = document.createElement('img');
   img.src = src;
@@ -96,14 +103,27 @@ export async function buildCertificateCards() {
     found.push({ n, src });
   }
 
+  // Named uploads supplement the original numbered, auto-discovered files.
+  try {
+    const response = await fetch('assets/certificates/extra.json', { cache: 'no-store' });
+    if (response.ok) {
+      const extras = await response.json();
+      for (const meta of extras) {
+        if (typeof meta.file !== 'string' || /[\\/]/.test(meta.file)) continue;
+        const src = `assets/certificates/${encodeURIComponent(meta.file)}`;
+        if (await imageExists(src)) found.push({ n: found.length + 1, src, meta });
+      }
+    }
+  } catch { /* Numbered certificates still work if the optional list fails. */ }
+
   if (!found.length) {
     section.style.display = 'none';
     return 0;
   }
 
   stack.innerHTML = '';
-  for (const { n, src } of found) {
-    const meta = await loadCertMeta(n);
+  for (const { n, src, meta: suppliedMeta } of found) {
+    const meta = suppliedMeta || await loadCertMeta(n);
     stack.appendChild(buildCard(src, meta, n));
   }
 
